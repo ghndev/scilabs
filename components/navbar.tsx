@@ -3,6 +3,7 @@ import { Fira_Sans_Condensed } from 'next/font/google'
 import { MaxWidthWrapper } from './max-width-wrapper'
 import { SearchBar } from './search-bar'
 import { ThemeSwitch } from './theme-switch'
+import { CircleUser } from 'lucide-react'
 
 const firaSansCondensed = Fira_Sans_Condensed({
   subsets: ['latin'],
@@ -24,6 +25,9 @@ export function Navbar() {
           <div className="flex items-center gap-5">
             <SearchBar />
             <ThemeSwitch />
+            <Link href="/profile">
+              <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
+            </Link>
           </div>
         </div>
       </MaxWidthWrapper>
