@@ -20,10 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Navbar />
-          <main className="flex flex-col min-h-[calc(100vh-4rem)]">
-            {children}
-          </main>
+          {children}
         </ThemeProvider>
       </body>
     </html>
