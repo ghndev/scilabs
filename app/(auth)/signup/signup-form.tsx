@@ -13,15 +13,16 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { loginSchema } from '@/lib/validation'
+import { signupSchema } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-export function LoginForm() {
+export function SignupForm() {
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: '',
+      username: '',
       password: ''
     }
   })
@@ -29,11 +30,11 @@ export function LoginForm() {
   return (
     <MaxWidthWrapper className="pt-20 max-w-lg flex flex-col items-center justify-center pb-16">
       <AuthHeader
-        title="WELCOME TO THE sciLABS"
-        description="Explore a Variety of Science Articles!"
+        title="YOUR GATEWAY TO SCIENCE"
+        description="Start Your Scientific Journey Today!"
       />
       <div className="mt-8 w-full flex flex-col">
-        <span className="text-sm font-medium text-start">Social Login</span>
+        <span className="text-sm font-medium text-start">Sign Up with</span>
         <GoogleLoginButton />
       </div>
       <div className="relative mt-7 w-full">
@@ -48,7 +49,7 @@ export function LoginForm() {
       </div>
       <div className="mt-8 w-full">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(() => console.log('login'))}>
+          <form onSubmit={form.handleSubmit(() => console.log('signup'))}>
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -56,6 +57,22 @@ export function LoginForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="border-gray-500/30 focus:border-primary dark:bg-gray-500/20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
                     <FormControl>
                       <Input
                         className="border-gray-500/30 focus:border-primary dark:bg-gray-500/20"
@@ -84,14 +101,14 @@ export function LoginForm() {
               />
             </div>
             <Button type="submit" className="mt-7 w-full text-white">
-              Log In
+              Sign Up
             </Button>
             <p className="mt-5 flex justify-center gap-2">
-              <span className="text-sm">New to sciLABS?</span>
+              <span className="text-sm">Already have an account?</span>
               <a
-                href="/signup"
+                href="/login"
                 className="text-blue-500 underline hover:text-blue-400 text-sm">
-                Sign Up
+                Log In
               </a>
             </p>
           </form>
