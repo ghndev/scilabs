@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 export const loginSchema = z.object({
-  username: z.string({ required_error: 'Username is required' }),
-  password: z.string({ required_error: 'Password is required' })
+  username: z.string().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required')
 })
 
 export type LoginValues = z.infer<typeof loginSchema>
