@@ -13,12 +13,17 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { signupSchema } from '@/lib/validation'
+import { signupSchema, SignupValues } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTransition } from 'react'
 import { useForm } from 'react-hook-form'
+import { signup } from './actions'
+import { Loader2 } from 'lucide-react'
 
 export function SignupForm() {
-  const form = useForm({
+  const [isPending, startTransition] = useTransition()
+
+  const form = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       email: '',
@@ -26,6 +31,19 @@ export function SignupForm() {
       password: ''
     }
   })
+
+  async function onSubmit(values: SignupValues) {
+    startTransition(async () => {
+      const result = await signup(values)
+      if (result.error === 'email') {
+        form.setError('email', { message: result.message })
+      } else if (result.error === 'username') {
+        form.setError('username', { message: result.message })
+      } else if (result.error === 'server') {
+        form.setError('root', { message: result.message })
+      }
+    })
+  }
 
   return (
     <MaxWidthWrapper className="pt-20 max-w-lg flex flex-col items-center justify-center pb-16">
@@ -49,7 +67,7 @@ export function SignupForm() {
       </div>
       <div className="mt-8 w-full">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(() => console.log('signup'))}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -91,6 +109,7 @@ export function SignupForm() {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
+                        type="password"
                         className="border-gray-500/30 focus:border-primary dark:bg-gray-500/20"
                         {...field}
                       />
@@ -100,7 +119,11 @@ export function SignupForm() {
                 )}
               />
             </div>
-            <Button type="submit" className="mt-7 w-full text-white">
+            <Button
+              disabled={isPending}
+              type="submit"
+              className="mt-7 w-full text-white">
+              {isPending && <Loader2 className="size-4 mr-2" />}
               Sign Up
             </Button>
             <p className="mt-5 flex justify-center gap-2">
