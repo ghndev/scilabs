@@ -3,20 +3,15 @@ import { Fira_Sans_Condensed } from 'next/font/google'
 import { MaxWidthWrapper } from './max-width-wrapper'
 import { SearchBar } from './search-bar'
 import { ThemeSwitch } from './theme-switch'
-import { CircleUser, LogIn, User } from 'lucide-react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from './ui/dropdown-menu'
+
+import { UserButton } from './user-button'
 
 const firaSansCondensed = Fira_Sans_Condensed({
   subsets: ['latin'],
   weight: ['400', '600']
 })
 
-export function Navbar() {
+export async function Navbar() {
   return (
     <nav className="h-16">
       <MaxWidthWrapper>
@@ -31,25 +26,7 @@ export function Navbar() {
           <div className="flex items-center gap-5">
             <SearchBar />
             <ThemeSwitch />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild className="cursor-pointer">
-                <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="dark:border-primary">
-                <DropdownMenuItem className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <Link href="/login">
-                  <DropdownMenuItem className="cursor-pointer">
-                    <LogIn className="mr-2 h-4 w-4" />
-                    <span>Login</span>
-                  </DropdownMenuItem>
-                </Link>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <UserButton />
           </div>
         </div>
       </MaxWidthWrapper>

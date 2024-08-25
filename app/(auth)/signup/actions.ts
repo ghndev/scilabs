@@ -5,35 +5,33 @@ import { signupSchema, SignupValues } from '@/lib/validation'
 import { isRedirectError } from 'next/dist/client/components/redirect'
 import { hash } from '@node-rs/argon2'
 import { generateIdFromEntropySize } from 'lucia'
-import { lucia } from '@/auth'
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 export async function signup(credentials: SignupValues) {
   try {
     const { email, username, password } = signupSchema.parse(credentials)
 
-    const existingEmail = await db.user.findFirst({ where: { email } })
+    const userByEmail = await db.user.findFirst({ where: { email } })
 
-    if (existingEmail) {
+    if (userByEmail) {
       return {
         error: 'email',
         message: 'Email already taken'
       }
     }
 
-    const existingUsername = await db.user.findFirst({
+    const userByUsername = await db.user.findFirst({
       where: { name: username }
     })
 
-    if (existingUsername) {
+    if (userByUsername) {
       return {
         error: 'username',
         message: 'Username already taken'
       }
     }
 
-    const passwordHash = await hash(password, {
+    const hashedPassword = await hash(password, {
       memoryCost: 19456,
       timeCost: 2,
       outputLen: 32,
@@ -47,19 +45,11 @@ export async function signup(credentials: SignupValues) {
         id: userId,
         name: username,
         email,
-        password: passwordHash
+        password: hashedPassword
       }
     })
 
-    const session = await lucia.createSession(userId, {})
-    const sessionCookie = lucia.createSessionCookie(session.id)
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes
-    )
-
-    return redirect('/')
+    return redirect('/login')
   } catch (error) {
     if (isRedirectError(error)) throw error
     console.error(error)

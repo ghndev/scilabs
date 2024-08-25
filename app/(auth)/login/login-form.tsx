@@ -13,18 +13,32 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { loginSchema } from '@/lib/validation'
+import { loginSchema, LoginValues } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
+import { login } from './actions'
 
 export function LoginForm() {
-  const form = useForm({
+  const [error, setError] = useState<string>()
+
+  const [isPending, startTransition] = useTransition()
+
+  const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: ''
     }
   })
+
+  async function onSubmit(values: LoginValues) {
+    startTransition(async () => {
+      const result = await login(values)
+      setError(result.message)
+    })
+  }
 
   return (
     <MaxWidthWrapper className="pt-20 max-w-lg flex flex-col items-center justify-center pb-16">
@@ -48,7 +62,7 @@ export function LoginForm() {
       </div>
       <div className="mt-8 w-full">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(() => console.log('login'))}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -74,6 +88,7 @@ export function LoginForm() {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
+                        type="password"
                         className="border-gray-500/30 focus:border-primary dark:bg-gray-500/20"
                         {...field}
                       />
@@ -83,9 +98,18 @@ export function LoginForm() {
                 )}
               />
             </div>
-            <Button type="submit" className="mt-7 w-full text-white">
-              Log In
-            </Button>
+            <div className="mt-7">
+              <p className="text-destructive text-sm font-medium text-center mb-1">
+                {error}
+              </p>
+              <Button
+                disabled={isPending}
+                type="submit"
+                className="w-full text-white">
+                {isPending && <Loader2 className="size-4 mr-2" />}
+                Log In
+              </Button>
+            </div>
             <p className="mt-5 flex justify-center gap-2">
               <span className="text-sm">New to sciLABS?</span>
               <a
