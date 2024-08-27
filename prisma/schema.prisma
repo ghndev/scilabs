@@ -11,9 +11,10 @@ model User {
   id            String    @id
   name          String    @unique
   email         String    @unique
-  password      String
+  password      String?
   emailVerified DateTime?
   image         String?
+  googleId      String?   @unique
   sessions      Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

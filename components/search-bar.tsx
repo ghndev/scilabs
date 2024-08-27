@@ -5,7 +5,7 @@ import { Input } from './ui/input'
 
 export function SearchBar() {
   return (
-    <div className="relative h-8">
+    <div className="relative h-8 hidden sm:block">
       <Input
         placeholder="Search"
         className="h-full text-xs bg-gray-100 border-none dark:bg-[#242535]"

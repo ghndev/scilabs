@@ -12,19 +12,23 @@ import Link from 'next/link'
 import { logout } from '@/app/(auth)/actions'
 
 export function UserButton() {
-  const { session } = useSession()
+  const { user } = useSession()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="cursor-pointer">
-        <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
+        {user?.image ? (
+          <img src={user.image} alt="avatar" className="h-6 w-6 rounded-full" />
+        ) : (
+          <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="dark:border-primary">
         <DropdownMenuItem className="cursor-pointer">
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
-        {session ? (
+        {user ? (
           <DropdownMenuItem onClick={() => logout()} className="cursor-pointer">
             <LogOut className="mr-2 h-4 w-4" />
             <span>Logout</span>

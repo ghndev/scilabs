@@ -11,7 +11,7 @@ const firaSansCondensed = Fira_Sans_Condensed({
   weight: ['400', '600']
 })
 
-export async function Navbar() {
+export function Navbar() {
   return (
     <nav className="h-16">
       <MaxWidthWrapper>
