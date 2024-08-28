@@ -70,7 +70,6 @@ export async function GET(req: NextRequest) {
 
     const userId = generateIdFromEntropySize(10)
     const username = generateUsername('', 5, 10)
-    console.log(username)
 
     await db.user.create({
       data: {

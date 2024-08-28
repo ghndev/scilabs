@@ -5,6 +5,7 @@ import { SearchBar } from './search-bar'
 import { ThemeSwitch } from './theme-switch'
 
 import { UserButton } from './user-button'
+import { SquarePen } from 'lucide-react'
 
 const firaSansCondensed = Fira_Sans_Condensed({
   subsets: ['latin'],
@@ -26,6 +27,9 @@ export function Navbar() {
           <div className="flex items-center gap-5">
             <SearchBar />
             <ThemeSwitch />
+            <Link href="/new-post">
+              <SquarePen className="text-primary h-6 w-6" strokeWidth={1} />
+            </Link>
             <UserButton />
           </div>
         </div>
