@@ -1,0 +1,20 @@
+export const topics = [
+  { value: 'physics', label: 'Physics' },
+  { value: 'chemistry', label: 'Chemistry' },
+  { value: 'biology', label: 'Biology' },
+  { value: 'astronomy', label: 'Astronomy' },
+  { value: 'neuroscience', label: 'Neuroscience' },
+  { value: 'genetics', label: 'Genetics' },
+  { value: 'robotics', label: 'Robotics' },
+  { value: 'artificial-intelligence', label: 'AI' },
+  { value: 'quantum', label: 'Quantum' },
+  { value: 'nanotechnology', label: 'Nanotechnology' },
+  { value: 'biotechnology', label: 'Biotechnology' },
+  { value: 'space', label: 'Space' },
+  { value: 'climate', label: 'Climate' },
+  { value: 'ecology', label: 'Ecology' },
+  { value: 'oceanography', label: 'Oceanography' },
+  { value: 'paleontology', label: 'Paleontology' },
+  { value: 'daily', label: 'Daily' },
+  { value: 'other', label: 'Other' }
+] as const

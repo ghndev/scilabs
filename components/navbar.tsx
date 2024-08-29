@@ -27,7 +27,7 @@ export function Navbar() {
           <div className="flex items-center gap-5">
             <SearchBar />
             <ThemeSwitch />
-            <Link href="/new-post">
+            <Link href="/new">
               <SquarePen className="text-primary h-6 w-6" strokeWidth={1} />
             </Link>
             <UserButton />
