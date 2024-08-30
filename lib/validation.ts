@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { topics } from './constants'
 
 export const loginSchema = z.object({
   email: z
@@ -35,3 +36,18 @@ export const signupSchema = z.object({
 })
 
 export type SignupValues = z.infer<typeof signupSchema>
+
+export const postSchema = z.object({
+  topic: z
+    .string()
+    .refine((val) => topics.some((topic) => topic.value === val), {
+      message: 'Please select a valid topic'
+    }),
+  title: z
+    .string()
+    .min(1, 'Title is required')
+    .max(100, 'Title must be 100 characters or less'),
+  content: z.any()
+})
+
+export type PostValues = z.infer<typeof postSchema>

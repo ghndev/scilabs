@@ -67,3 +67,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+h1.ce-header {
+  @apply text-3xl font-sans font-bold;
+}
+h2.ce-header {
+  @apply text-2xl font-sans font-bold;
+}
+h3.ce-header {
+  @apply text-xl font-sans font-bold;
+}
+h4.ce-header {
+  @apply text-lg font-sans font-bold;
+}
+h5.ce-header {
+  @apply text-base font-sans font-bold;
+}
+h6.ce-header {
+  @apply text-sm font-sans font-bold;
+}
