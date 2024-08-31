@@ -1,18 +1,8 @@
-import { Button } from './ui/button'
-import { useRouter } from 'next/navigation'
-
 export function GoogleLoginButton() {
-  const router = useRouter()
-
-  const handleGoogleLogin = () => {
-    router.push('/login/google')
-  }
-
   return (
-    <Button
-      onClick={handleGoogleLogin}
-      variant="default"
-      className="mt-2 text-gray-500 bg-white shadow border hover:bg-white/90 font-semibold dark:bg-gray-500/20">
+    <a
+      href="/login/google"
+      className="flex items-center justify-center px-4 py-2 text-sm rounded-md mt-2 text-gray-500 bg-white shadow border hover:bg-white/90 font-semibold dark:bg-gray-500/20">
       <svg
         className="size-4 mr-2"
         width="25"
@@ -46,6 +36,6 @@ export function GoogleLoginButton() {
         />
       </svg>
       Continue with Google
-    </Button>
+    </a>
   )
 }
