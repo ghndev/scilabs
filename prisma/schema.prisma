@@ -18,6 +18,8 @@ model User {
   sessions      Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  Post Post[]
 }
 
 model Session {
@@ -27,4 +29,39 @@ model Session {
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  topic     Topic
+  title     String
+  content   Json
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([topic])
+  @@index([authorId])
+}
+
+enum Topic {
+  PHYSICS
+  CHEMISTRY
+  BIOLOGY
+  ASTRONOMY
+  NEUROSCIENCE
+  GENETICS
+  ROBOTICS
+  ARTIFICIAL_INTELLIGENCE
+  QUANTUM
+  NANOTECHNOLOGY
+  BIOTECHNOLOGY
+  SPACE
+  CLIMATE
+  ECOLOGY
+  OCEANOGRAPHY
+  PALEONTOLOGY
+  DAILY
+  OTHER
 }

@@ -134,7 +134,17 @@ export function Editor() {
     }
   }, [isMounted, initializeEditor])
 
-  function onSubmit(values: PostValues) {}
+  async function onSubmit(values: PostValues) {
+    const blocks = await ref.current?.save()
+
+    console.log(values)
+
+    const payload: PostValues = {
+      topic: values.topic,
+      title: values.title,
+      content: blocks
+    }
+  }
 
   if (!isMounted) {
     return null
@@ -234,11 +244,14 @@ export function Editor() {
           />
           {/* content */}
           <div className="relative">
-            <div id="editor" className="min-h-[300px] w-[590px] font-serif" />
+            <div
+              id="editor"
+              className="min-h-[300px] w-fit md:w-full font-serif"
+            />
             <Button
               type="submit"
               size="sm"
-              className="absolute left-0 bottom-52 z-10">
+              className="absolute left-0 bottom-52 -z-10 sm:z-50 text-white">
               submit
             </Button>
           </div>
