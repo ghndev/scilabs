@@ -1,7 +1,10 @@
+'use server'
+
 import { validateRequest } from '@/auth'
 import { db } from '@/db'
 import { postSchema, PostValues } from '@/lib/validation'
 import { Topic } from '@prisma/client'
+import { redirect } from 'next/navigation'
 
 export async function createPost(values: PostValues) {
   const { user } = await validateRequest()
@@ -12,7 +15,7 @@ export async function createPost(values: PostValues) {
 
   const { topic, title, content } = postSchema.parse(values)
 
-  await db.post.create({
+  const post = await db.post.create({
     data: {
       topic: topic as Topic,
       title,
@@ -20,4 +23,6 @@ export async function createPost(values: PostValues) {
       authorId: user.id
     }
   })
+
+  redirect(`/posts/${post.id}`)
 }

@@ -1,6 +1,7 @@
 import { validateRequest } from '@/auth'
 import { Navbar } from '@/components/navbar'
 import { SessionProvider } from '@/components/session-provider'
+import { Toaster } from '@/components/ui/toaster'
 
 export default async function Layout({
   children
@@ -13,6 +14,7 @@ export default async function Layout({
     <SessionProvider value={session}>
       <Navbar />
       <main className="flex flex-col min-h-[calc(100vh-4rem)]">{children}</main>
+      <Toaster />
     </SessionProvider>
   )
 }

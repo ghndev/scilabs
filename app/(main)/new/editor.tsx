@@ -32,7 +32,9 @@ import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import EditorJS from '@editorjs/editorjs'
 import { uploadFiles } from '@/lib/uploadthing'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
+import { useMutation } from '@tanstack/react-query'
+import { createPost } from './actions'
 
 export function Editor() {
   const form = useForm<PostValues>({
@@ -44,13 +46,23 @@ export function Editor() {
     }
   })
 
+  const { toast } = useToast()
   const [open, setOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
 
   const ref = useRef<EditorJS>()
   const _titleRef = useRef<HTMLTextAreaElement>(null)
 
-  // useMutation
+  const { mutate: savePost } = useMutation({
+    mutationFn: createPost,
+    onError: (error) => {
+      toast({
+        title: error.message,
+        description: 'There was an error on our end. Please try again.',
+        variant: 'destructive'
+      })
+    }
+  })
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default
@@ -137,13 +149,13 @@ export function Editor() {
   async function onSubmit(values: PostValues) {
     const blocks = await ref.current?.save()
 
-    console.log(values)
-
     const payload: PostValues = {
       topic: values.topic,
       title: values.title,
       content: blocks
     }
+
+    savePost(payload)
   }
 
   if (!isMounted) {
