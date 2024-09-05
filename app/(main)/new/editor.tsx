@@ -26,7 +26,7 @@ import { topics } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { postSchema, PostValues } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { Check, ChevronsUpDown, Loader2, Upload } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
@@ -53,7 +53,7 @@ export function Editor() {
   const ref = useRef<EditorJS>()
   const _titleRef = useRef<HTMLTextAreaElement>(null)
 
-  const { mutate: savePost } = useMutation({
+  const { mutate: savePost, isPending } = useMutation({
     mutationFn: createPost,
     onError: (error) => {
       toast({
@@ -166,6 +166,18 @@ export function Editor() {
     <MaxWidthWrapper className="max-w-[700px] mt-10">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Button
+            disabled={isPending}
+            type="submit"
+            size="sm"
+            className="text-white mb-10">
+            {isPending ? (
+              <Loader2 className="h-4 w-4 mr-2" />
+            ) : (
+              <Upload className="h-4 w-4 mr-2" />
+            )}
+            upload
+          </Button>
           <FormField
             control={form.control}
             name="topic"
@@ -178,7 +190,7 @@ export function Editor() {
                         aria-expanded={open}
                         className="text-xs flex items-center">
                         {field.value ? (
-                          <div className="text-white p-1 px-2 bg-[#4B6BFB] rounded-lg">
+                          <div className="text-white p-1 px-2 bg-[#4B6BFB] rounded">
                             {
                               topics.find(
                                 (topic) => topic.value === field.value
@@ -254,19 +266,7 @@ export function Editor() {
               </FormItem>
             )}
           />
-          {/* content */}
-          <div className="relative">
-            <div
-              id="editor"
-              className="min-h-[300px] w-fit md:w-full font-serif"
-            />
-            <Button
-              type="submit"
-              size="sm"
-              className="absolute left-0 bottom-52 -z-10 sm:z-50 text-white">
-              submit
-            </Button>
-          </div>
+          <div id="editor" className="min-h-[300px] w-fit md:w-full" />
         </form>
       </Form>
     </MaxWidthWrapper>

@@ -20,8 +20,8 @@ export function Navbar() {
           <Link href="/" className={`${firaSansCondensed.className} text-3xl`}>
             sci<span className="text-primary font-semibold">LABS</span>
           </Link>
+          <SearchBar />
           <div className="flex items-center gap-5">
-            <SearchBar />
             <ThemeSwitch />
             <Link href="/new">
               <SquarePen className="text-primary h-6 w-6" strokeWidth={1} />
