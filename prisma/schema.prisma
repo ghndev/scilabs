@@ -36,6 +36,7 @@ model Post {
   topic     Topic
   title     String
   content   Json
+  thumbnail String?
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
   createdAt DateTime @default(now())

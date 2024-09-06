@@ -23,7 +23,7 @@ export function UserButton() {
           <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="dark:border-primary">
+      <DropdownMenuContent align="start" className="dark:border">
         <DropdownMenuItem className="cursor-pointer">
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>

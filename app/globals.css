@@ -87,5 +87,8 @@ h6.ce-header {
   @apply text-sm font-sans font-bold;
 }
 .codex-editor {
-  @apply min-w-[36.875rem];
+  @apply sm:min-w-[36.875rem];
+}
+.image-tool__image {
+  @apply flex justify-center items-center;
 }
