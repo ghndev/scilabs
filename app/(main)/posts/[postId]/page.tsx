@@ -29,7 +29,7 @@ export default async function Page({ params: { postId } }: PageProps) {
   }
 
   return (
-    <MaxWidthWrapper className="max-w-[700px] mt-5">
+    <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
       <div className="text-white text-[0.65rem] w-fit py-1 px-2 bg-[#4B6BFB] rounded">
         {formatEnumValue(post.topic)}
       </div>
