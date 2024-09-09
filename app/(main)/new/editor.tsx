@@ -165,7 +165,7 @@ export function Editor() {
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-10">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-fit">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <Button
             disabled={isPending}
             type="submit"
@@ -266,7 +266,7 @@ export function Editor() {
               </FormItem>
             )}
           />
-          <div id="editor" className="min-h-[300px] w-fit md:w-full" />
+          <div id="editor" className="min-h-[300px] max-w-full w-full" />
         </form>
       </Form>
     </MaxWidthWrapper>

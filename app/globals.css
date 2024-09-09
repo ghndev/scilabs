@@ -92,3 +92,10 @@ h6 {
 .image-tool__image {
   @apply flex justify-center items-center;
 }
+.cdx-block {
+  @apply py-[0.6rem];
+}
+.ce-header {
+  margin: 15px 0px 8px !important;
+  padding: 0 !important;
+}

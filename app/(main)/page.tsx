@@ -3,8 +3,9 @@ import { db } from '@/db'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser } from 'lucide-react'
 import Link from 'next/link'
+import { cache } from 'react'
 
-export default async function Home() {
+async function getPost() {
   const post = await db.post.findUnique({
     where: {
       id: 'cm0rtq19v00015t1mkv0benln'
@@ -19,8 +20,33 @@ export default async function Home() {
     }
   })
 
+  return post
+}
+
+const getCachedPost = cache(getPost)
+
+export default async function Home() {
+  const post = await getCachedPost()
+
+  const posts = await db.post.findMany({
+    where: {
+      NOT: {
+        id: 'cm0rtq19v00015t1mkv0benln'
+      }
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          image: true
+        }
+      }
+    }
+  })
+
   return (
     <MaxWidthWrapper>
+      {/* Main post  */}
       {post?.thumbnail && (
         <div className="relative">
           <img
@@ -35,7 +61,7 @@ export default async function Home() {
             <Link
               href={`/posts/${post.id}`}
               className="text-white font-semibold text-2xl cursor-pointer">
-              {post.title}
+              <p className="w-60 sm:w-[30rem] line-clamp-2">{post.title}</p>
             </Link>
             <div className="flex items-center mt-3 gap-3">
               <div className="flex items-center gap-1.5">
@@ -60,6 +86,8 @@ export default async function Home() {
           </div>
         </div>
       )}
+      {/* Posts */}
+      {posts.map((post) => post.title)}
     </MaxWidthWrapper>
   )
 }

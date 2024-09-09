@@ -4,12 +4,13 @@ import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { EditorOutput } from '@/components/editor-output'
+import { cache } from 'react'
 
 interface PageProps {
   params: { postId: string }
 }
 
-export default async function Page({ params: { postId } }: PageProps) {
+const getPost = cache(async (postId: string) => {
   const post = await db.post.findUnique({
     where: {
       id: postId
@@ -27,6 +28,18 @@ export default async function Page({ params: { postId } }: PageProps) {
   if (!post) {
     return notFound()
   }
+
+  return post
+})
+
+export async function generateMetadata({ params: { postId } }: PageProps) {
+  const post = await getPost(postId)
+
+  return { title: `${post.title} by ${post.author.name}` }
+}
+
+export default async function Page({ params: { postId } }: PageProps) {
+  const post = await getPost(postId)
 
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">

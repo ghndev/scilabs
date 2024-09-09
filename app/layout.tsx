@@ -7,7 +7,7 @@ import { QueryProvider } from '@/components/query-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Scilabs',
+  title: 'sciLABS',
   description: 'Read our science articles'
 }
 

@@ -14,7 +14,8 @@ interface EditorOutputProps {
 const style = {
   paragraph: {
     lineHeight: '1.6em',
-    margin: '.4em 0'
+    padding: '0.6rem 0',
+    margin: 0
   }
 }
 
