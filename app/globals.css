@@ -99,3 +99,22 @@ h6 {
   margin: 15px 0px 8px !important;
   padding: 0 !important;
 }
+ol {
+  list-style: decimal;
+  margin: 0;
+  padding-left: 40px;
+  outline: none;
+}
+ul {
+  list-style: disc;
+  margin: 0;
+  padding-left: 40px;
+  outline: none;
+}
+li {
+  padding: 5.5px 0 5.5px 3px;
+}
+
+p a {
+  @apply underline text-blue-600;
+}

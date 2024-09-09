@@ -47,7 +47,7 @@ export default async function Page({ params: { postId } }: PageProps) {
         {formatEnumValue(post.topic)}
       </div>
       <h1 className="text-2xl mt-2 font-bold">{post.title}</h1>
-      <div className="flex items-center mt-3 gap-3">
+      <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
           {post.author.image ? (
             <img
