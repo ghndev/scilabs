@@ -10,7 +10,7 @@ interface PageProps {
   params: { postId: string }
 }
 
-const getPost = cache(async (postId: string) => {
+async function getPost(postId: string) {
   const post = await db.post.findUnique({
     where: {
       id: postId
@@ -30,16 +30,18 @@ const getPost = cache(async (postId: string) => {
   }
 
   return post
-})
+}
+
+const getCachedPost = cache(getPost)
 
 export async function generateMetadata({ params: { postId } }: PageProps) {
-  const post = await getPost(postId)
+  const post = await getCachedPost(postId)
 
   return { title: `${post.title} by ${post.author.name}` }
 }
 
 export default async function Page({ params: { postId } }: PageProps) {
-  const post = await getPost(postId)
+  const post = await getCachedPost(postId)
 
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
