@@ -6,9 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatEnumValue(enumValue: string): string {
-  const withSpaces = enumValue.replace(/_/g, ' ')
-
-  return withSpaces.replace(/\w\S*/g, (word) => {
+  return enumValue.replace(/\w\S*/g, (word) => {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
   })
 }

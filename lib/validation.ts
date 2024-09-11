@@ -1,5 +1,5 @@
+import { Topic } from '@prisma/client'
 import { z } from 'zod'
-import { topics } from './constants'
 
 export const loginSchema = z.object({
   email: z
@@ -38,11 +38,7 @@ export const signupSchema = z.object({
 export type SignupValues = z.infer<typeof signupSchema>
 
 export const postSchema = z.object({
-  topic: z
-    .string()
-    .refine((val) => topics.some((topic) => topic.value === val), {
-      message: 'Please select a valid topic'
-    }),
+  topic: z.nativeEnum(Topic),
   title: z
     .string()
     .min(1, 'Title is required')

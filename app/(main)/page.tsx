@@ -1,4 +1,5 @@
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
+import { PostCard } from '@/components/post-card'
 import { db } from '@/db'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser } from 'lucide-react'
@@ -41,7 +42,8 @@ export default async function Home() {
           image: true
         }
       }
-    }
+    },
+    take: 9
   })
 
   return (
@@ -86,8 +88,12 @@ export default async function Home() {
           </div>
         </div>
       )}
-      {/* Posts */}
-      {posts.map((post) => post.title)}
+      <div className="my-8 grid sm:grid-cols-2 md:grid-cols-3 gap-5">
+        {/* Posts */}
+        {posts.map((post) => (
+          <PostCard key={post.id} post={post} author={post.author} />
+        ))}
+      </div>
     </MaxWidthWrapper>
   )
 }

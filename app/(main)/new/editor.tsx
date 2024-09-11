@@ -22,8 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { topics } from '@/lib/constants'
-import { cn } from '@/lib/utils'
+import { cn, formatEnumValue } from '@/lib/utils'
 import { postSchema, PostValues } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronsUpDown, Loader2, Upload } from 'lucide-react'
@@ -35,12 +34,13 @@ import { uploadFiles } from '@/lib/uploadthing'
 import { useToast } from '@/components/ui/use-toast'
 import { useMutation } from '@tanstack/react-query'
 import { createPost } from './actions'
+import { Topic } from '@prisma/client'
 
 export function Editor() {
   const form = useForm<PostValues>({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      topic: '',
+      topic: undefined,
       title: '',
       content: null
     }
@@ -185,11 +185,7 @@ export function Editor() {
                         className="text-xs flex items-center">
                         {field.value ? (
                           <div className="text-white p-1 px-2 bg-[#4B6BFB] rounded">
-                            {
-                              topics.find(
-                                (topic) => topic.value === field.value
-                              )?.label
-                            }
+                            {formatEnumValue(field.value)}
                           </div>
                         ) : (
                           'Select topic...'
@@ -206,26 +202,26 @@ export function Editor() {
                         <CommandList>
                           <CommandEmpty>No topic found.</CommandEmpty>
                           <CommandGroup>
-                            {topics.map((topic) => (
+                            {Object.values(Topic).map((topic) => (
                               <CommandItem
                                 className="text-xs"
-                                key={topic.value}
-                                value={topic.value}
+                                key={topic}
+                                value={topic}
                                 onSelect={(currentValue) => {
-                                  form.setValue('topic', currentValue)
+                                  form.setValue('topic', currentValue as Topic)
                                   form.clearErrors('topic')
                                   setOpen(false)
                                 }}>
                                 <Check
                                   className={cn(
                                     'mr-2 h-4 w-4',
-                                    field.value === topic.value
+                                    field.value === topic
                                       ? 'opacity-100'
                                       : 'opacity-0'
                                   )}
                                 />
                                 <div className="text-white p-1 bg-[#4B6BFB] rounded-lg">
-                                  {topic.label}
+                                  {formatEnumValue(topic)}
                                 </div>
                               </CommandItem>
                             ))}
