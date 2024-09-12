@@ -12,7 +12,17 @@ export function formatEnumValue(enumValue: string): string {
 }
 
 export function formatDate(date: Date, locale: string = 'en-US'): string {
-  if (!(date instanceof Date) || isNaN(date.getTime())) {
+  let dateObject: Date
+
+  if (typeof date === 'string') {
+    dateObject = new Date(date)
+  } else if (date instanceof Date) {
+    dateObject = date
+  } else {
+    return 'Invalid Date'
+  }
+
+  if (isNaN(dateObject.getTime())) {
     return 'Invalid Date'
   }
 
@@ -22,5 +32,5 @@ export function formatDate(date: Date, locale: string = 'en-US'): string {
     day: 'numeric'
   }
 
-  return new Intl.DateTimeFormat(locale, options).format(date)
+  return new Intl.DateTimeFormat(locale, options).format(dateObject)
 }

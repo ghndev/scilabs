@@ -4,7 +4,7 @@ import { db } from '@/db'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser } from 'lucide-react'
 import Link from 'next/link'
-import { cache } from 'react'
+import { unstable_cache as nextCache } from 'next/cache'
 
 async function getPost() {
   const post = await db.post.findUnique({
@@ -24,7 +24,10 @@ async function getPost() {
   return post
 }
 
-const getCachedPost = cache(getPost)
+const getCachedPost = nextCache(getPost, ['post detail'], {
+  tags: ['post detail'],
+  revalidate: 60
+})
 
 export default async function Home() {
   const post = await getCachedPost()
