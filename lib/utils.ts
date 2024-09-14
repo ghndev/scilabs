@@ -34,3 +34,40 @@ export function formatDate(date: Date, locale: string = 'en-US'): string {
 
   return new Intl.DateTimeFormat(locale, options).format(dateObject)
 }
+
+export interface EditorJSBlock {
+  id: string
+  type: string
+  data: {
+    text?: string
+    level?: number
+    file?: {
+      url: string
+    }
+    caption?: string
+    withBorder?: boolean
+    stretched?: boolean
+    withBackground?: boolean
+  }
+}
+
+export interface EditorJSContent {
+  time: number
+  blocks: EditorJSBlock[]
+  version: string
+}
+
+export function extractThumbnail(content: EditorJSContent): string | null {
+  if (content && Array.isArray(content.blocks)) {
+    const imageBlock = content.blocks.find((block) => block.type === 'image')
+    if (
+      imageBlock &&
+      imageBlock.data &&
+      imageBlock.data.file &&
+      imageBlock.data.file.url
+    ) {
+      return imageBlock.data.file.url
+    }
+  }
+  return null
+}

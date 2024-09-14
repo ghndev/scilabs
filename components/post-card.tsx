@@ -13,19 +13,21 @@ export function PostCard({
 }) {
   return (
     <Card className="p-4 space-y-2.5">
-      {post.thumbnail ? (
-        <img
-          src={post.thumbnail}
-          alt="thumbnail"
-          className="rounded-lg object-cover w-full h-40"
-        />
-      ) : (
-        <img
-          src="/image_not_available.png"
-          alt="thumbnail"
-          className="rounded-lg object-cover w-full h-40"
-        />
-      )}
+      <Link href={`/posts/${post.id}`}>
+        {post.thumbnail ? (
+          <img
+            src={post.thumbnail}
+            alt="thumbnail"
+            className="rounded-lg object-cover w-full h-40"
+          />
+        ) : (
+          <img
+            src="/image_not_available.png"
+            alt="thumbnail"
+            className="rounded-lg object-cover w-full h-40"
+          />
+        )}
+      </Link>
       <div className="text-white text-[0.65rem] w-fit py-1 px-2 bg-[#4B6BFB] rounded">
         {formatEnumValue(post.topic)}
       </div>

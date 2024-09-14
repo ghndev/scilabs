@@ -1,6 +1,5 @@
 import { db } from '@/db'
 import { notFound } from 'next/navigation'
-import { unstable_cache as nextCache } from 'next/cache'
 import { PostDetail } from './post-detail'
 
 interface PageProps {
@@ -29,19 +28,14 @@ async function getPost(postId: string) {
   return post
 }
 
-const getCachedPost = nextCache(getPost, ['post detail'], {
-  tags: ['post detail'],
-  revalidate: 60
-})
-
 export async function generateMetadata({ params: { postId } }: PageProps) {
-  const post = await getCachedPost(postId)
+  const post = await getPost(postId)
 
   return { title: `${post.title} by ${post.author.name}` }
 }
 
 export default async function Page({ params: { postId } }: PageProps) {
-  const post = await getCachedPost(postId)
+  const post = await getPost(postId)
 
   return <PostDetail post={post} author={post.author} />
 }

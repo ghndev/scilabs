@@ -33,19 +33,28 @@ import EditorJS from '@editorjs/editorjs'
 import { uploadFiles } from '@/lib/uploadthing'
 import { useToast } from '@/components/ui/use-toast'
 import { useMutation } from '@tanstack/react-query'
-import { createPost } from './actions'
+import { createPost } from '../app/(main)/new/actions'
 import { Topic } from '@prisma/client'
+import { updatePost } from '@/app/(main)/posts/[postId]/edit/actions'
+import { useRouter } from 'next/navigation'
 
-export function Editor() {
+export function Editor({
+  initialData,
+  postId
+}: {
+  initialData?: PostValues
+  postId?: string
+}) {
   const form = useForm<PostValues>({
     resolver: zodResolver(postSchema),
-    defaultValues: {
+    defaultValues: initialData || {
       topic: undefined,
       title: '',
       content: null
     }
   })
 
+  const router = useRouter()
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
@@ -54,7 +63,16 @@ export function Editor() {
   const _titleRef = useRef<HTMLTextAreaElement>(null)
 
   const { mutate: savePost, isPending } = useMutation({
-    mutationFn: createPost,
+    mutationFn: (values: PostValues) => {
+      if (postId) {
+        return updatePost(values, postId)
+      } else {
+        return createPost(values)
+      }
+    },
+    onSuccess: ({ url }) => {
+      router.push(url)
+    },
     onError: (error) => {
       toast({
         title: error.message,
@@ -80,7 +98,7 @@ export function Editor() {
         },
         placeholder: 'Type your content here...',
         inlineToolbar: true,
-        data: { blocks: [] },
+        data: initialData?.content || { blocks: [] },
         tools: {
           header: Header,
           linkTool: {
@@ -113,7 +131,7 @@ export function Editor() {
         }
       })
     }
-  }, [])
+  }, [initialData])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -170,7 +188,7 @@ export function Editor() {
             ) : (
               <Upload className="h-4 w-4 mr-2" />
             )}
-            upload
+            {postId ? <p>edit</p> : <p>upload</p>}
           </Button>
           <FormField
             control={form.control}

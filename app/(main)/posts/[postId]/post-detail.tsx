@@ -9,14 +9,18 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Post } from '@prisma/client'
+import { validateRequest } from '@/auth'
+import Link from 'next/link'
 
-export function PostDetail({
+export async function PostDetail({
   author,
   post
 }: {
   author: { name: string; image: string | null }
   post: Post
 }) {
+  const { user } = await validateRequest()
+
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
       <div className="text-white text-[0.65rem] w-fit py-1 px-2 bg-[#4B6BFB] rounded">
@@ -62,6 +66,13 @@ export function PostDetail({
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="cursor-pointer">
+            {user?.id === post.authorId && (
+              <Link href={`/posts/${post.id}/edit`}>
+                <DropdownMenuItem className="cursor-pointer">
+                  Edit post
+                </DropdownMenuItem>
+              </Link>
+            )}
             <DropdownMenuItem className="cursor-pointer">
               <p className="text-destructive">Report post...</p>
             </DropdownMenuItem>
