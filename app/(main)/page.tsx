@@ -1,15 +1,16 @@
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
-import { PostCard } from '@/components/post-card'
 import { db } from '@/db'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser } from 'lucide-react'
 import Link from 'next/link'
 import { unstable_cache as nextCache } from 'next/cache'
+import { MAIN_POST_ID } from '@/lib/constants'
+import { PostList } from '@/components/post-list'
 
 async function getPost() {
   const post = await db.post.findUnique({
     where: {
-      id: 'cm0rtq19v00015t1mkv0benln'
+      id: MAIN_POST_ID
     },
     include: {
       author: {
@@ -31,23 +32,6 @@ const getCachedPost = nextCache(getPost, ['post detail'], {
 
 export default async function Home() {
   const post = await getCachedPost()
-
-  const posts = await db.post.findMany({
-    where: {
-      NOT: {
-        id: 'cm0rtq19v00015t1mkv0benln'
-      }
-    },
-    include: {
-      author: {
-        select: {
-          name: true,
-          image: true
-        }
-      }
-    },
-    take: 9
-  })
 
   return (
     <MaxWidthWrapper>
@@ -91,12 +75,7 @@ export default async function Home() {
           </div>
         </div>
       )}
-      <div className="my-8 grid sm:grid-cols-2 md:grid-cols-3 gap-5">
-        {/* Posts */}
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} author={post.author} />
-        ))}
-      </div>
+      <PostList />
     </MaxWidthWrapper>
   )
 }

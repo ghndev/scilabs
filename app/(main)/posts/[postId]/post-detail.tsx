@@ -1,3 +1,5 @@
+'use client'
+
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { BookmarkPlus, CircleUser, Ellipsis, ThumbsUp } from 'lucide-react'
@@ -8,18 +10,25 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Post } from '@prisma/client'
-import { validateRequest } from '@/auth'
 import Link from 'next/link'
+import { useSession } from '@/components/session-provider'
+import { useQuery } from '@tanstack/react-query'
+import { getPost } from './actions'
+import { notFound } from 'next/navigation'
 
-export async function PostDetail({
-  author,
-  post
-}: {
-  author: { name: string; image: string | null }
-  post: Post
-}) {
-  const { user } = await validateRequest()
+export function PostDetail({ postId }: { postId: string }) {
+  const { user } = useSession()
+
+  const { data: post } = useQuery({
+    queryKey: ['post', postId],
+    queryFn: () => getPost(postId)
+  })
+
+  console.log(post)
+
+  if (!post) {
+    return notFound()
+  }
 
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
@@ -29,16 +38,18 @@ export async function PostDetail({
       <h1 className="text-2xl mt-2 font-bold">{post.title}</h1>
       <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
-          {author.image ? (
+          {post.author.image ? (
             <img
-              src={author.image}
+              src={post.author.image}
               alt="user"
               className="h-6 w-6 rounded-full"
             />
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
           )}
-          <p className="text-[#696A75] text-xs font-semibold">{author.name}</p>
+          <p className="text-[#696A75] text-xs font-semibold">
+            {post.author.name}
+          </p>
         </div>
         <p className="text-[#696A75] text-xs">{formatDate(post.createdAt)}</p>
       </div>
@@ -46,14 +57,14 @@ export async function PostDetail({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <ThumbsUp
-              className="size-5 cursor-pointer hover:fill-[#97989F]"
+              className="size-5 cursor-pointer hover:fill-gray-400 text-gray-400"
               strokeWidth={1}
             />
             <p className="text-sm font-extralight ">0</p>
           </div>
           <div>
             <BookmarkPlus
-              className="size-5 cursor-pointer hover:fill-[#97989F]"
+              className="size-5 cursor-pointer hover:fill-gray-400 text-gray-400"
               strokeWidth={1}
             />
           </div>
@@ -61,7 +72,7 @@ export async function PostDetail({
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Ellipsis
-              className="size-5 cursor-pointer fill-[#97989F]"
+              className="size-5 cursor-pointer hover:fill-gray-400 text-gray-400"
               strokeWidth={1}
             />
           </DropdownMenuTrigger>

@@ -32,7 +32,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import EditorJS from '@editorjs/editorjs'
 import { uploadFiles } from '@/lib/uploadthing'
 import { useToast } from '@/components/ui/use-toast'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createPost } from '../app/(main)/new/actions'
 import { Topic } from '@prisma/client'
 import { updatePost } from '@/app/(main)/posts/[postId]/edit/actions'
@@ -54,6 +54,7 @@ export function Editor({
     }
   })
 
+  const queryClient = useQueryClient()
   const router = useRouter()
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
@@ -184,7 +185,7 @@ export function Editor({
             size="sm"
             className="text-white mb-10">
             {isPending ? (
-              <Loader2 className="h-4 w-4 mr-2" />
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             ) : (
               <Upload className="h-4 w-4 mr-2" />
             )}
