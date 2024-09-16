@@ -1,8 +1,31 @@
-import { getPost } from './actions'
+import { db } from '@/db'
 import { PostDetail } from './post-detail'
+import { notFound } from 'next/navigation'
 
 interface PageProps {
   params: { postId: string }
+}
+
+async function getPost(postId: string) {
+  const post = await db.post.findUnique({
+    where: {
+      id: postId
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          image: true
+        }
+      }
+    }
+  })
+
+  if (!post) {
+    return notFound()
+  }
+
+  return post
 }
 
 export async function generateMetadata({ params: { postId } }: PageProps) {
@@ -12,5 +35,7 @@ export async function generateMetadata({ params: { postId } }: PageProps) {
 }
 
 export default async function Page({ params: { postId } }: PageProps) {
-  return <PostDetail postId={postId} />
+  const post = await getPost(postId)
+
+  return <PostDetail post={post} author={post.author} />
 }
