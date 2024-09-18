@@ -37,5 +37,5 @@ export async function generateMetadata({ params: { postId } }: PageProps) {
 export default async function Page({ params: { postId } }: PageProps) {
   const post = await getPost(postId)
 
-  return <PostDetail post={post} author={post.author} />
+  return <PostDetail post={post} />
 }

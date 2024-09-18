@@ -4,7 +4,6 @@ import { validateRequest } from '@/auth'
 import { db } from '@/db'
 import { EditorJSContent, extractThumbnail } from '@/lib/utils'
 import { postSchema, PostValues } from '@/lib/validation'
-import { revalidatePath } from 'next/cache'
 
 export async function updatePost(values: PostValues, postId: string) {
   const { user } = await validateRequest()
@@ -29,15 +28,6 @@ export async function updatePost(values: PostValues, postId: string) {
 
   const { topic, title, content } = postSchema.parse(values)
 
-  const hasChanges =
-    topic !== savedPost.topic ||
-    title !== savedPost.title ||
-    JSON.stringify(content) !== JSON.stringify(savedPost.content)
-
-  if (!hasChanges) {
-    throw new Error('No changes detected')
-  }
-
   const thumbnail = extractThumbnail(content as EditorJSContent)
 
   const updatedPost = await db.post.update({
@@ -51,8 +41,6 @@ export async function updatePost(values: PostValues, postId: string) {
   })
 
   const url = `/posts/${updatedPost.id}`
-
-  revalidatePath(url)
 
   return { url }
 }

@@ -64,6 +64,7 @@ export function Editor({
   const _titleRef = useRef<HTMLTextAreaElement>(null)
 
   const { mutate: savePost, isPending } = useMutation({
+    mutationKey: ['post'],
     mutationFn: (values: PostValues) => {
       if (postId) {
         return updatePost(values, postId)
@@ -72,6 +73,7 @@ export function Editor({
       }
     },
     onSuccess: ({ url }) => {
+      queryClient.invalidateQueries({ queryKey: ['post'] })
       router.push(url)
     },
     onError: (error) => {

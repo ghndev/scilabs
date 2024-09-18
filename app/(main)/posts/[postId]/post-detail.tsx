@@ -1,3 +1,5 @@
+'use client'
+
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { BookmarkPlus, CircleUser, Ellipsis, ThumbsUp } from 'lucide-react'
@@ -8,39 +10,48 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Post } from '@prisma/client'
-import { validateRequest } from '@/auth'
 import Link from 'next/link'
+import { PostData } from '@/lib/types'
+import { useSession } from '@/components/session-provider'
+import { useQuery } from '@tanstack/react-query'
+import { getPost } from './actions'
 
-export async function PostDetail({
-  author,
-  post
-}: {
-  author: { name: string; image: string | null }
-  post: Post
-}) {
-  const { user } = await validateRequest()
+export function PostDetail({ post }: { post: PostData }) {
+  const { user } = useSession()
+
+  const { data } = useQuery({
+    queryKey: ['post'],
+    queryFn: async () => {
+      const data = await getPost(post.id)
+      return data
+    },
+    initialData: post
+  })
+
+  console.log(data)
 
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
       <div className="text-white text-[0.65rem] w-fit py-1 px-2 bg-[#4B6BFB] rounded">
-        {formatEnumValue(post.topic)}
+        {formatEnumValue(data.topic)}
       </div>
-      <h1 className="text-2xl mt-2 font-bold">{post.title}</h1>
+      <h1 className="text-2xl mt-2 font-bold">{data.title}</h1>
       <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
-          {author.image ? (
+          {data.author.image ? (
             <img
-              src={author.image}
+              src={data.author.image}
               alt="user"
               className="h-6 w-6 rounded-full"
             />
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
           )}
-          <p className="text-[#696A75] text-xs font-semibold">{author.name}</p>
+          <p className="text-[#696A75] text-xs font-semibold">
+            {data.author.name}
+          </p>
         </div>
-        <p className="text-[#696A75] text-xs">{formatDate(post.createdAt)}</p>
+        <p className="text-[#696A75] text-xs">{formatDate(data.createdAt)}</p>
       </div>
       <div className="flex justify-between items-center py-2 px-0.5 border-y text-[#97989F]">
         <div className="flex items-center gap-2">
@@ -79,7 +90,7 @@ export async function PostDetail({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <EditorOutput content={post.content} />
+      <EditorOutput content={data.content} />
     </MaxWidthWrapper>
   )
 }
