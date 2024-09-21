@@ -65,13 +65,8 @@ export function Editor({
 
   const { mutate: savePost, isPending } = useMutation({
     mutationKey: ['post'],
-    mutationFn: (values: PostValues) => {
-      if (postId) {
-        return updatePost(values, postId)
-      } else {
-        return createPost(values)
-      }
-    },
+    mutationFn: (values: PostValues) =>
+      postId ? updatePost(values, postId) : createPost(values),
     onSuccess: ({ url }) => {
       queryClient.invalidateQueries({ queryKey: ['post'] })
       router.push(url)

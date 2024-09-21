@@ -1,17 +1,49 @@
 'use server'
 
+import { validateRequest } from '@/auth'
 import { db } from '@/db'
+import { getPostDataInclude } from '@/lib/types'
 
 export async function getPost(postId: string) {
+  const { user } = await validateRequest()
+
+  const post = await db.post.findUnique({
+    where: {
+      id: postId
+    },
+    include: getPostDataInclude(user?.id)
+  })
+
+  if (!post) {
+    throw new Error('Post not found')
+  }
+
+  return post
+}
+
+export async function getLikeStatus(postId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('You need to be logged in')
+  }
+
   const post = await db.post.findUnique({
     where: {
       id: postId
     },
     include: {
-      author: {
+      likes: {
+        where: {
+          userId: user.id
+        },
         select: {
-          name: true,
-          image: true
+          userId: true
+        }
+      },
+      _count: {
+        select: {
+          likes: true
         }
       }
     }
@@ -21,5 +53,67 @@ export async function getPost(postId: string) {
     throw new Error('Post not found')
   }
 
-  return post
+  const data = { likes: post._count.likes, isLikedByUser: !!post.likes.length }
+
+  return data
+}
+
+export async function createLike(postId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('You need to be logged in')
+  }
+
+  const post = await db.post.findUnique({
+    where: {
+      id: postId
+    },
+    select: {
+      authorId: true
+    }
+  })
+
+  if (!post) {
+    throw new Error('Post not found')
+  }
+
+  await db.like.upsert({
+    where: {
+      id: {
+        userId: user.id,
+        postId
+      }
+    },
+    create: {
+      userId: user.id,
+      postId
+    },
+    update: {}
+  })
+}
+
+export async function deleteLike(postId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('You need to be logged in')
+  }
+
+  const post = await db.post.findUnique({
+    where: {
+      id: postId
+    }
+  })
+
+  if (!post) {
+    throw new Error('Post not found')
+  }
+
+  await db.like.deleteMany({
+    where: {
+      userId: user.id,
+      postId: post.id
+    }
+  })
 }

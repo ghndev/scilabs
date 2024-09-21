@@ -18,8 +18,8 @@ model User {
   sessions      Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-
-  Post Post[]
+  posts         Post[]
+  likes         Like[]
 }
 
 model Session {
@@ -41,9 +41,19 @@ model Post {
   authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  likes     Like[]
 
   @@index([topic])
   @@index([authorId])
+}
+
+model Like {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+
+  @@id(name: "id", [userId, postId])
 }
 
 enum Topic {

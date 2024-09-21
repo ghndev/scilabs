@@ -1,12 +1,12 @@
 import { db } from '@/db'
 import { PostDetail } from './post-detail'
-import { notFound } from 'next/navigation'
+import { getPost } from './actions'
 
 interface PageProps {
   params: { postId: string }
 }
 
-async function getPost(postId: string) {
+export async function generateMetadata({ params: { postId } }: PageProps) {
   const post = await db.post.findUnique({
     where: {
       id: postId
@@ -14,22 +14,15 @@ async function getPost(postId: string) {
     include: {
       author: {
         select: {
-          name: true,
-          image: true
+          name: true
         }
       }
     }
   })
 
   if (!post) {
-    return notFound()
+    return { title: 'Post not found' }
   }
-
-  return post
-}
-
-export async function generateMetadata({ params: { postId } }: PageProps) {
-  const post = await getPost(postId)
 
   return { title: `${post.title} by ${post.author.name}` }
 }

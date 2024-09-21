@@ -1,24 +1,42 @@
 import { Prisma } from '@prisma/client'
 
-export function getPostDataSelect() {
+export function getUserDataSelect() {
   return {
-    id: true,
-    topic: true,
-    title: true,
-    content: true,
-    thumbnail: true,
-    authorId: true,
-    createdAt: true,
-    updatedAt: true,
+    name: true,
+    image: true
+  } satisfies Prisma.UserSelect
+}
+
+export type UserData = Prisma.UserGetPayload<{
+  select: ReturnType<typeof getUserDataSelect>
+}>
+
+export function getPostDataInclude(loggedInUserId?: string) {
+  return {
     author: {
+      select: getUserDataSelect()
+    },
+    likes: {
+      where: {
+        userId: loggedInUserId
+      },
       select: {
-        name: true,
-        image: true
+        userId: true
+      }
+    },
+    _count: {
+      select: {
+        likes: true
       }
     }
-  } satisfies Prisma.PostSelect
+  } satisfies Prisma.PostInclude
 }
 
 export type PostData = Prisma.PostGetPayload<{
-  select: ReturnType<typeof getPostDataSelect>
+  include: ReturnType<typeof getPostDataInclude>
 }>
+
+export interface LikeInfo {
+  likes: number
+  isLikedByUser: boolean
+}

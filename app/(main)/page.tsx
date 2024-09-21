@@ -38,11 +38,13 @@ export default async function Home() {
       {/* Main post  */}
       {post?.thumbnail && (
         <div className="relative">
-          <img
-            src={post.thumbnail}
-            alt="post"
-            className="mt-5 rounded-lg w-full h-[25rem] object-cover select-none"
-          />
+          <Link href={`/posts/${post.id}`}>
+            <img
+              src={post.thumbnail}
+              alt="post"
+              className="mt-5 rounded-lg w-full h-[25rem] object-cover select-none"
+            />
+          </Link>
           <div className="absolute bottom-5 left-5 sm:bottom-9 sm:left-9 flex flex-col gap-2">
             <div className="text-white text-[0.65rem] w-fit py-1 px-2 bg-[#4B6BFB] rounded">
               {formatEnumValue(post.topic)}

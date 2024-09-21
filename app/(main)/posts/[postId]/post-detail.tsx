@@ -15,27 +15,25 @@ import { PostData } from '@/lib/types'
 import { useSession } from '@/components/session-provider'
 import { useQuery } from '@tanstack/react-query'
 import { getPost } from './actions'
+import { LikeButton } from '@/components/like-button'
 
 export function PostDetail({ post }: { post: PostData }) {
   const { user } = useSession()
 
   const { data } = useQuery({
     queryKey: ['post'],
-    queryFn: async () => {
-      const data = await getPost(post.id)
-      return data
-    },
+    queryFn: async () => await getPost(post.id),
     initialData: post
   })
-
-  console.log(data)
 
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
       <div className="text-white text-[0.65rem] w-fit py-1 px-2 bg-[#4B6BFB] rounded">
         {formatEnumValue(data.topic)}
       </div>
-      <h1 className="text-2xl mt-2 font-bold">{data.title}</h1>
+      <h1 className="text-2xl mt-2 font-bold" suppressHydrationWarning>
+        {data.title}
+      </h1>
       <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
           {data.author.image ? (
@@ -55,13 +53,13 @@ export function PostDetail({ post }: { post: PostData }) {
       </div>
       <div className="flex justify-between items-center py-2 px-0.5 border-y text-[#97989F]">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1">
-            <ThumbsUp
-              className="size-5 cursor-pointer hover:fill-[#97989F]"
-              strokeWidth={1}
-            />
-            <p className="text-sm font-extralight ">0</p>
-          </div>
+          <LikeButton
+            postId={post.id}
+            initialState={{
+              likes: post._count.likes,
+              isLikedByUser: post.likes.some((like) => like.userId === user?.id)
+            }}
+          />
           <div>
             <BookmarkPlus
               className="size-5 cursor-pointer hover:fill-[#97989F]"
