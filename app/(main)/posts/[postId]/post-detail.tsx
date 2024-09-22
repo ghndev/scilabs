@@ -2,7 +2,7 @@
 
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { formatDate, formatEnumValue } from '@/lib/utils'
-import { BookmarkPlus, CircleUser, Ellipsis, ThumbsUp } from 'lucide-react'
+import { BookmarkPlus, CircleUser, Ellipsis } from 'lucide-react'
 import { EditorOutput } from '@/components/editor-output'
 import {
   DropdownMenu,
@@ -16,24 +16,27 @@ import { useSession } from '@/components/session-provider'
 import { useQuery } from '@tanstack/react-query'
 import { getPost } from './actions'
 import { LikeButton } from '@/components/like-button'
+import { PostDetailSkeleton } from '@/components/post-detail-skeleton'
 
 export function PostDetail({ post }: { post: PostData }) {
   const { user } = useSession()
 
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ['post'],
     queryFn: async () => await getPost(post.id),
     initialData: post
   })
+
+  if (isFetching) {
+    return <PostDetailSkeleton />
+  }
 
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
       <div className="text-white text-[0.65rem] w-fit py-1 px-2 bg-[#4B6BFB] rounded">
         {formatEnumValue(data.topic)}
       </div>
-      <h1 className="text-2xl mt-2 font-bold" suppressHydrationWarning>
-        {data.title}
-      </h1>
+      <h1 className="text-2xl mt-2 font-bold">{data.title}</h1>
       <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
           {data.author.image ? (
