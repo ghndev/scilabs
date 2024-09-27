@@ -60,7 +60,7 @@ export default async function Home() {
                   <img
                     src={post.author.image}
                     alt="user"
-                    className="h-6 w-6 rounded-full"
+                    className="h-6 w-6 rounded-full object-cover"
                   />
                 ) : (
                   <CircleUser

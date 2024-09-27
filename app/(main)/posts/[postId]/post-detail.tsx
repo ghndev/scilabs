@@ -43,7 +43,7 @@ export function PostDetail({ post }: { post: PostData }) {
             <img
               src={data.author.image}
               alt="user"
-              className="h-6 w-6 rounded-full"
+              className="h-6 w-6 rounded-full object-cover"
             />
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />

@@ -3,7 +3,8 @@ import { Prisma } from '@prisma/client'
 export function getUserDataSelect() {
   return {
     name: true,
-    image: true
+    image: true,
+    bio: true
   } satisfies Prisma.UserSelect
 }
 
