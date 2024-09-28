@@ -1,8 +1,10 @@
 'use server'
 
+import { validateRequest } from '@/auth'
 import { db } from '@/db'
 import { MAIN_POST_ID } from '@/lib/constants'
 import { getPostDataInclude } from '@/lib/types'
+import { profileSchema, ProfileValues } from '@/lib/validation'
 
 export async function loadMorePosts(page: number, limit: number) {
   const skip = (page - 1) * limit
@@ -22,4 +24,34 @@ export async function loadMorePosts(page: number, limit: number) {
   })
 
   return posts
+}
+
+export async function updateProfile(values: ProfileValues) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('You need to be logged in')
+  }
+
+  const { image, username, bio } = profileSchema.parse(values)
+
+  const updates: Partial<ProfileValues> = {}
+
+  if (image !== user.image) updates.image = image
+  if (username !== user.name) updates.username = username
+  if (bio !== user.bio) updates.bio = bio
+
+  if (Object.keys(updates).length > 0) {
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        image: updates.image,
+        name: updates.username,
+        bio: updates.bio
+      }
+    })
+    return { message: 'Profile updated successfully' }
+  } else {
+    return { message: 'No changes detected' }
+  }
 }

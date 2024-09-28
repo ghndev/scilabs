@@ -33,7 +33,7 @@ export function PostCard({
       </div>
       <Link
         href={`/posts/${post.id}`}
-        className="rounded line-clamp-2 font-bold w-full">
+        className="rounded h-12 line-clamp-2 font-bold w-full">
         {post.title}
       </Link>
       <div className="flex items-center mt-3 mb-5 gap-3">

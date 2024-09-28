@@ -6,13 +6,16 @@ import { ThemeSwitch } from './theme-switch'
 
 import { UserButton } from './user-button'
 import { SquarePen } from 'lucide-react'
+import { validateRequest } from '@/auth'
 
 const firaSansCondensed = Fira_Sans_Condensed({
   subsets: ['latin'],
   weight: ['400', '600']
 })
 
-export function Navbar() {
+export async function Navbar() {
+  const { user } = await validateRequest()
+
   return (
     <nav className="h-16">
       <MaxWidthWrapper>
@@ -26,7 +29,7 @@ export function Navbar() {
             <Link href="/new">
               <SquarePen className="text-primary h-6 w-6" strokeWidth={1} />
             </Link>
-            <UserButton />
+            <UserButton user={user} />
           </div>
         </div>
       </MaxWidthWrapper>

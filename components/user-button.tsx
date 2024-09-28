@@ -13,10 +13,9 @@ import { logout } from '@/app/(auth)/actions'
 import { useState } from 'react'
 import { Profile } from './profile'
 import { useRouter } from 'next/navigation'
+import { UserData } from '@/lib/types'
 
-export function UserButton() {
-  const { user } = useSession()
-
+export function UserButton({ user }: { user: UserData | null }) {
   const router = useRouter()
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)

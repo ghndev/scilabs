@@ -156,7 +156,7 @@ export function Editor({
     }
   }, [isMounted, initializeEditor])
 
-  async function onSubmit(values: PostValues) {
+  const onSubmit = async (values: PostValues) => {
     const blocks = await ref.current?.save()
 
     const payload: PostValues = {

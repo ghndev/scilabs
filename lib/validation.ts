@@ -47,3 +47,26 @@ export const postSchema = z.object({
 })
 
 export type PostValues = z.infer<typeof postSchema>
+
+export const profileSchema = z.object({
+  image: z.string().optional(),
+  username: z
+    .string()
+    .min(1, 'Username is required')
+    .max(10, 'Username must be 10 characters or less')
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      'Username can only contain letters, numbers, and underscores'
+    )
+    .refine((name) => !name.includes(' '), {
+      message: 'Username cannot contain spaces'
+    }),
+  bio: z
+    .string()
+    .max(260, 'Bio must be 260 characters or less')
+    .trim()
+    .optional()
+    .transform((val) => (val === '' ? undefined : val))
+})
+
+export type ProfileValues = z.infer<typeof profileSchema>
