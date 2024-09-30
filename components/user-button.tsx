@@ -7,18 +7,28 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from './ui/dropdown-menu'
-import { useSession } from './session-provider'
 import Link from 'next/link'
 import { logout } from '@/app/(auth)/actions'
 import { useState } from 'react'
 import { Profile } from './profile'
 import { useRouter } from 'next/navigation'
-import { UserData } from '@/lib/types'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { getCurrentUser } from '@/app/(main)/actions'
+import { useSession } from './session-provider'
+import { Skeleton } from './ui/skeleton'
+import { Avatar, AvatarImage } from './ui/avatar'
 
-export function UserButton({ user }: { user: UserData | null }) {
+export function UserButton() {
+  const { user: isLoggedIn } = useSession()
   const router = useRouter()
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+
+  const { data: user, isFetching } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => await getCurrentUser(),
+    staleTime: Infinity
+  })
 
   const handleProfile = () => {
     if (!user) {
@@ -28,16 +38,18 @@ export function UserButton({ user }: { user: UserData | null }) {
     setIsProfileModalOpen(true)
   }
 
+  if (isLoggedIn && isFetching) {
+    return <Skeleton className="size-6 rounded-full" />
+  }
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="cursor-pointer">
           {user?.image ? (
-            <img
-              src={user.image}
-              alt="avatar"
-              className="h-6 w-6 rounded-full object-cover"
-            />
+            <Avatar className="size-6">
+              <AvatarImage src={user.image} alt="avatar" />
+            </Avatar>
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
           )}

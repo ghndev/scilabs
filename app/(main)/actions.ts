@@ -55,3 +55,8 @@ export async function updateProfile(values: ProfileValues) {
     return { message: 'No changes detected' }
   }
 }
+
+export async function getCurrentUser() {
+  const { user } = await validateRequest()
+  return user
+}

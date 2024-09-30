@@ -3,6 +3,7 @@ import { Card } from './ui/card'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser } from 'lucide-react'
 import Link from 'next/link'
+import { Avatar, AvatarImage } from './ui/avatar'
 
 export function PostCard({
   author,
@@ -39,11 +40,9 @@ export function PostCard({
       <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
           {author.image ? (
-            <img
-              src={author.image}
-              alt="user"
-              className="h-6 w-6 rounded-full object-cover"
-            />
+            <Avatar className="size-6">
+              <AvatarImage src={author.image} alt="author" />
+            </Avatar>
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
           )}

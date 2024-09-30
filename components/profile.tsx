@@ -22,9 +22,9 @@ import {
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateProfile } from '@/app/(main)/actions'
-import { useRouter } from 'next/navigation'
+import { Avatar, AvatarImage } from './ui/avatar'
 
 interface ProfileProps {
   isOpen: boolean
@@ -34,7 +34,6 @@ interface ProfileProps {
 
 export function Profile({ isOpen, setIsOpen, user }: ProfileProps) {
   const { toast } = useToast()
-  const router = useRouter()
   const [isDragOver, setIsDragOver] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
 
@@ -83,6 +82,8 @@ export function Profile({ isOpen, setIsOpen, user }: ProfileProps) {
   const usernameLength = form.watch('username').length
   const bioLength = form.watch('bio')?.length
 
+  const queryClient = useQueryClient()
+
   const { mutate: saveProfile, isPending } = useMutation({
     mutationKey: ['profile'],
     mutationFn: async (values: ProfileValues) => await updateProfile(values),
@@ -91,6 +92,7 @@ export function Profile({ isOpen, setIsOpen, user }: ProfileProps) {
         title: message
       })
       setIsOpen(false)
+      queryClient.invalidateQueries({ queryKey: ['user'] })
     }
   })
 
@@ -109,7 +111,7 @@ export function Profile({ isOpen, setIsOpen, user }: ProfileProps) {
           <div className="flex items-center justify-center gap-10">
             <div
               className={cn(
-                'relative size-10 sm:size-28 rounded-full bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 flex justify-center flex-col items-center',
+                'relative rounded-full bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 flex justify-center flex-col items-center',
                 { 'ring-blue-900/25 bg-blue-900/10': isDragOver }
               )}>
               <div className="relative flex flex-col items-center justify-center h-full w-full">
@@ -125,7 +127,7 @@ export function Profile({ isOpen, setIsOpen, user }: ProfileProps) {
                   onDragLeave={() => setIsDragOver(false)}>
                   {({ getRootProps, getInputProps }) => (
                     <div
-                      className="h-full w-full flex flex-col items-center justify-center cursor-pointer"
+                      className="size-10 sm:size-28 flex flex-col items-center justify-center cursor-pointer"
                       {...getRootProps()}>
                       <input {...getInputProps()} />
                       {isDragOver ? (
@@ -150,11 +152,9 @@ export function Profile({ isOpen, setIsOpen, user }: ProfileProps) {
                             upload
                           </p>
                         ) : imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt="profile"
-                            className="size-10 sm:size-28 rounded-full object-cover"
-                          />
+                          <Avatar className="size-10 sm:size-28">
+                            <AvatarImage src={imageUrl} alt="profile" />
+                          </Avatar>
                         ) : (
                           <p className="font-semibold">Drag and drop</p>
                         )}

@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getPost } from './actions'
 import { LikeButton } from '@/components/like-button'
 import { PostDetailSkeleton } from '@/components/post-detail-skeleton'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 
 export function PostDetail({ post }: { post: PostData }) {
   const { user } = useSession()
@@ -24,7 +25,8 @@ export function PostDetail({ post }: { post: PostData }) {
   const { data, isFetching } = useQuery({
     queryKey: ['post'],
     queryFn: async () => await getPost(post.id),
-    initialData: post
+    initialData: post,
+    staleTime: Infinity
   })
 
   if (isFetching) {
@@ -40,11 +42,9 @@ export function PostDetail({ post }: { post: PostData }) {
       <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
           {data.author.image ? (
-            <img
-              src={data.author.image}
-              alt="user"
-              className="h-6 w-6 rounded-full object-cover"
-            />
+            <Avatar className="size-6">
+              <AvatarImage src={data.author.image} alt="author" />
+            </Avatar>
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
           )}
