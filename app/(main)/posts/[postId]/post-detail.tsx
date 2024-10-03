@@ -2,7 +2,13 @@
 
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { formatDate, formatEnumValue } from '@/lib/utils'
-import { BookmarkPlus, CircleUser, Ellipsis } from 'lucide-react'
+import {
+  BookmarkPlus,
+  CircleUser,
+  Ellipsis,
+  Pencil,
+  Trash2
+} from 'lucide-react'
 import { EditorOutput } from '@/components/editor-output'
 import {
   DropdownMenu,
@@ -18,12 +24,15 @@ import { getPost } from './actions'
 import { LikeButton } from '@/components/like-button'
 import { PostDetailSkeleton } from '@/components/post-detail-skeleton'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { useState } from 'react'
+import { DeletePost } from '@/components/delete-post'
 
 export function PostDetail({ post }: { post: PostData }) {
   const { user } = useSession()
+  const [isDeletePostModalOpen, setIsDeletePostModalOPen] = useState(false)
 
   const { data, isFetching } = useQuery({
-    queryKey: ['post'],
+    queryKey: ['post', post.id],
     queryFn: async () => await getPost(post.id),
     initialData: post,
     staleTime: Infinity
@@ -79,19 +88,35 @@ export function PostDetail({ post }: { post: PostData }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="cursor-pointer">
             {user?.id === post.authorId && (
-              <Link href={`/posts/${post.id}/edit`}>
-                <DropdownMenuItem className="cursor-pointer">
-                  Edit post
+              <>
+                <Link href={`/posts/${post.id}/edit`}>
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Pencil className="size-4 mr-2" />
+                    Edit Post
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuItem
+                  onClick={() => setIsDeletePostModalOPen(true)}
+                  className="cursor-pointer">
+                  <Trash2 className="size-4 text-destructive mr-2" />
+                  <p className="text-destructive">Delete Post</p>
                 </DropdownMenuItem>
-              </Link>
+              </>
             )}
             <DropdownMenuItem className="cursor-pointer">
-              <p className="text-destructive">Report post...</p>
+              <p className="text-destructive">Report Post</p>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <EditorOutput content={data.content} />
+      {isDeletePostModalOpen && (
+        <DeletePost
+          isOpen={isDeletePostModalOpen}
+          setIsOpen={setIsDeletePostModalOPen}
+          post={data}
+        />
+      )}
     </MaxWidthWrapper>
   )
 }

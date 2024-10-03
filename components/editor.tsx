@@ -64,7 +64,7 @@ export function Editor({
   const _titleRef = useRef<HTMLTextAreaElement>(null)
 
   const { mutate: savePost, isPending } = useMutation({
-    mutationKey: ['post'],
+    mutationKey: ['post', postId],
     mutationFn: (values: PostValues) =>
       postId ? updatePost(values, postId) : createPost(values),
     onSuccess: ({ url }) => {

@@ -23,7 +23,7 @@ export function PostCard({
           />
         ) : (
           <img
-            src="/image_not_available.png"
+            src="/img_not_available.png"
             alt="thumbnail"
             className="rounded-lg object-cover w-full h-40"
           />

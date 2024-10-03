@@ -117,3 +117,33 @@ export async function deleteLike(postId: string) {
     }
   })
 }
+
+export async function deletePost(postId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('You need to be logged in')
+  }
+
+  const savedPost = await db.post.findUnique({
+    where: {
+      id: postId
+    }
+  })
+
+  if (!savedPost) {
+    throw new Error('Post not found')
+  }
+
+  if (savedPost.authorId !== user.id) {
+    throw new Error('You do not have permission to delete this post')
+  }
+
+  await db.post.delete({
+    where: {
+      id: postId
+    }
+  })
+
+  return { message: 'Post deleted successfully' }
+}
