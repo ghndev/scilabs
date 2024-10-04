@@ -26,6 +26,7 @@ import { PostDetailSkeleton } from '@/components/post-detail-skeleton'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { useState } from 'react'
 import { DeletePost } from '@/components/delete-post'
+import { BookmarkButton } from '@/components/boomark-button'
 
 export function PostDetail({ post }: { post: PostData }) {
   const { user } = useSession()
@@ -72,12 +73,14 @@ export function PostDetail({ post }: { post: PostData }) {
               isLikedByUser: post.likes.some((like) => like.userId === user?.id)
             }}
           />
-          <div>
-            <BookmarkPlus
-              className="size-5 cursor-pointer hover:fill-[#97989F]"
-              strokeWidth={1}
-            />
-          </div>
+          <BookmarkButton
+            postId={post.id}
+            initialState={{
+              isBookmarkedByUser: post.bookmarks.some(
+                (bookmark) => bookmark.userId === user?.id
+              )
+            }}
+          />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger>

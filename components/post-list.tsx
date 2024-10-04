@@ -36,9 +36,7 @@ export function PostList() {
   return (
     <div className="my-8 grid sm:grid-cols-2 md:grid-cols-3 gap-5 items-center">
       {data?.pages.flatMap((page) =>
-        page.map((post) => (
-          <PostCard key={post.id} post={post} author={post.author} />
-        ))
+        page.map((post) => <PostCard key={post.id} post={post} />)
       )}
       <div className="col-span-1 sm:col-span-2 md:col-span-3 mx-auto">
         {isFetchingNextPage ? (

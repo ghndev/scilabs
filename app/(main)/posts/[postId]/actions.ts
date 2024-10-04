@@ -21,6 +21,94 @@ export async function getPost(postId: string) {
   return post
 }
 
+export async function getBookmarkStatus(postId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('You need to be logged in')
+  }
+
+  const post = await db.post.findUnique({
+    where: {
+      id: postId
+    },
+    include: {
+      bookmarks: {
+        where: {
+          userId: user.id
+        }
+      }
+    }
+  })
+
+  if (!post) {
+    throw new Error('Post not found')
+  }
+
+  const data = {
+    isBookmarkedByUser: !!post.bookmarks.length
+  }
+
+  return data
+}
+
+export async function createBookmark(postId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('You need to be logged in')
+  }
+
+  const post = await db.post.findUnique({
+    where: {
+      id: postId
+    }
+  })
+
+  if (!post) {
+    throw new Error('Post not found')
+  }
+
+  await db.bookmark.upsert({
+    where: {
+      id: {
+        userId: user.id,
+        postId: postId
+      }
+    },
+    create: {
+      userId: user.id,
+      postId
+    },
+    update: {}
+  })
+}
+
+export async function deleteBookmark(postId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('You need to be logged in')
+  }
+
+  const post = await db.post.findUnique({
+    where: {
+      id: postId
+    }
+  })
+
+  if (!post) {
+    throw new Error('Post not found')
+  }
+
+  await db.bookmark.deleteMany({
+    where: {
+      userId: user.id,
+      postId
+    }
+  })
+}
+
 export async function getLikeStatus(postId: string) {
   const { user } = await validateRequest()
 
@@ -36,9 +124,6 @@ export async function getLikeStatus(postId: string) {
       likes: {
         where: {
           userId: user.id
-        },
-        select: {
-          userId: true
         }
       },
       _count: {
@@ -68,9 +153,6 @@ export async function createLike(postId: string) {
   const post = await db.post.findUnique({
     where: {
       id: postId
-    },
-    select: {
-      authorId: true
     }
   })
 

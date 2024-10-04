@@ -1,17 +1,11 @@
-import { Post } from '@prisma/client'
 import { Card } from './ui/card'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser } from 'lucide-react'
 import Link from 'next/link'
 import { Avatar, AvatarImage } from './ui/avatar'
+import { PostData } from '@/lib/types'
 
-export function PostCard({
-  author,
-  post
-}: {
-  author: { name: string; image: string | null }
-  post: Post
-}) {
+export function PostCard({ post }: { post: PostData }) {
   return (
     <Card className="p-4 space-y-2.5">
       <Link href={`/posts/${post.id}`}>
@@ -39,14 +33,16 @@ export function PostCard({
       </Link>
       <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
-          {author.image ? (
+          {post.author.image ? (
             <Avatar className="size-6">
-              <AvatarImage src={author.image} alt="author" />
+              <AvatarImage src={post.author.image} alt="author" />
             </Avatar>
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
           )}
-          <p className="text-[#97989F] text-xs font-semibold">{author.name}</p>
+          <p className="text-[#97989F] text-xs font-semibold">
+            {post.author.name}
+          </p>
         </div>
         <p className="text-[#97989F] text-xs">{formatDate(post.createdAt)}</p>
       </div>
