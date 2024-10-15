@@ -25,8 +25,8 @@ async function getPost() {
   return post
 }
 
-const getCachedPost = nextCache(getPost, ['post detail'], {
-  tags: ['post detail'],
+const getCachedPost = nextCache(getPost, ['post'], {
+  tags: ['post'],
   revalidate: 60
 })
 

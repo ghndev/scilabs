@@ -25,8 +25,7 @@ export function BookmarkButton({ postId, initialState }: BookmarkButtonProps) {
     queryKey,
     queryFn: async () => await getBookmarkStatus(postId),
     initialData: initialState,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true
+    staleTime: Infinity
   })
 
   const { mutate } = useMutation({
