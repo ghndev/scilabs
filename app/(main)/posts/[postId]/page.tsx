@@ -1,24 +1,12 @@
-import { db } from '@/db'
-import { PostDetail } from './post-detail'
 import { getPost } from './actions'
+import { PostDetail } from './post-detail'
 
 interface PageProps {
   params: { postId: string }
 }
 
 export async function generateMetadata({ params: { postId } }: PageProps) {
-  const post = await db.post.findUnique({
-    where: {
-      id: postId
-    },
-    include: {
-      author: {
-        select: {
-          name: true
-        }
-      }
-    }
-  })
+  const post = await getPost(postId)
 
   if (!post) {
     return { title: 'Post not found' }

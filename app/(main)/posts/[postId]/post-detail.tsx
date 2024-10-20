@@ -2,13 +2,7 @@
 
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { formatDate, formatEnumValue } from '@/lib/utils'
-import {
-  BookmarkPlus,
-  CircleUser,
-  Ellipsis,
-  Pencil,
-  Trash2
-} from 'lucide-react'
+import { CircleUser, Ellipsis, Pencil, Trash2 } from 'lucide-react'
 import { EditorOutput } from '@/components/editor-output'
 import {
   DropdownMenu,

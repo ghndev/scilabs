@@ -46,7 +46,7 @@ export function BookmarkButton({ postId, initialState }: BookmarkButtonProps) {
       queryClient.setQueryData(queryKey, context?.previousState)
       toast({
         variant: 'destructive',
-        description: error.message
+        description: 'Something went wrong.'
       })
     }
   })

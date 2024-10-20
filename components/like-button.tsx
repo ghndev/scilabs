@@ -48,7 +48,7 @@ export function LikeButton({ postId, initialState }: LikeButtonProps) {
       queryClient.setQueryData(queryKey, context?.previousState)
       toast({
         variant: 'destructive',
-        description: error.message
+        description: 'Something went wrong.'
       })
     }
   })
