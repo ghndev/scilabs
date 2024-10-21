@@ -1,8 +1,21 @@
-import { getPost } from './actions'
+import { db } from '@/db'
 import { PostDetail } from './post-detail'
 
 interface PageProps {
   params: { postId: string }
+}
+
+async function getPost(postId: string) {
+  const post = db.post.findUnique({
+    where: {
+      id: postId
+    },
+    include: {
+      author: true
+    }
+  })
+
+  return post
 }
 
 export async function generateMetadata({ params: { postId } }: PageProps) {
@@ -16,7 +29,5 @@ export async function generateMetadata({ params: { postId } }: PageProps) {
 }
 
 export default async function Page({ params: { postId } }: PageProps) {
-  const post = await getPost(postId)
-
-  return <PostDetail post={post} />
+  return <PostDetail postId={postId} />
 }

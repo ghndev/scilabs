@@ -21,15 +21,15 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { useState } from 'react'
 import { DeletePost } from '@/components/delete-post'
 import { BookmarkButton } from '@/components/boomark-button'
+import { notFound } from 'next/navigation'
 
-export function PostDetail({ post }: { post: PostData }) {
+export function PostDetail({ postId }: { postId: string }) {
   const { user } = useSession()
   const [isDeletePostModalOpen, setIsDeletePostModalOPen] = useState(false)
 
-  const { data, isFetching } = useQuery({
-    queryKey: ['post', post.id],
-    queryFn: async () => await getPost(post.id),
-    initialData: post,
+  const { data: post, isFetching } = useQuery({
+    queryKey: ['post', postId],
+    queryFn: async () => await getPost(postId),
     staleTime: Infinity
   })
 
@@ -37,31 +37,35 @@ export function PostDetail({ post }: { post: PostData }) {
     return <PostDetailSkeleton />
   }
 
+  if (!post) {
+    return notFound()
+  }
+
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
       <div className="text-white text-[0.65rem] w-fit py-1 px-2 bg-[#4B6BFB] rounded">
-        {formatEnumValue(data.topic)}
+        {formatEnumValue(post.topic)}
       </div>
-      <h1 className="text-2xl mt-2 font-bold">{data.title}</h1>
+      <h1 className="text-2xl mt-2 font-bold">{post.title}</h1>
       <div className="flex items-center mt-3 mb-5 gap-3">
         <div className="flex items-center gap-1.5">
-          {data.author.image ? (
+          {post.author.image ? (
             <Avatar className="size-6">
-              <AvatarImage src={data.author.image} alt="author" />
+              <AvatarImage src={post.author.image} alt="author" />
             </Avatar>
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
           )}
           <p className="text-[#696A75] text-xs font-semibold">
-            {data.author.name}
+            {post.author.name}
           </p>
         </div>
-        <p className="text-[#696A75] text-xs">{formatDate(data.createdAt)}</p>
+        <p className="text-[#696A75] text-xs">{formatDate(post.createdAt)}</p>
       </div>
       <div className="flex justify-between items-center py-2 px-0.5 border-y text-[#97989F]">
         <div className="flex items-center gap-2">
           <LikeButton
-            postId={post.id}
+            postId={postId}
             initialState={{
               likes: post._count.likes,
               isLikedByUser: post.likes.some((like) => like.userId === user?.id)
@@ -106,12 +110,12 @@ export function PostDetail({ post }: { post: PostData }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <EditorOutput content={data.content} />
+      <EditorOutput content={post.content} />
       {isDeletePostModalOpen && (
         <DeletePost
           isOpen={isDeletePostModalOpen}
           setIsOpen={setIsDeletePostModalOPen}
-          post={data}
+          post={post}
         />
       )}
     </MaxWidthWrapper>
