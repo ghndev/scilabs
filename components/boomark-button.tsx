@@ -1,3 +1,5 @@
+'use client'
+
 import { BookmarkPlus } from 'lucide-react'
 import { useToast } from './ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

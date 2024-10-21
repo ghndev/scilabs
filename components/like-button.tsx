@@ -1,3 +1,5 @@
+'use client'
+
 import { LikeInfo } from '@/lib/types'
 import { useToast } from './ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

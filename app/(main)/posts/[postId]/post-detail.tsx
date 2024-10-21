@@ -1,5 +1,3 @@
-'use client'
-
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser, Ellipsis, Pencil, Trash2 } from 'lucide-react'
@@ -12,34 +10,24 @@ import {
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 import { PostData } from '@/lib/types'
-import { useSession } from '@/components/session-provider'
-import { useQuery } from '@tanstack/react-query'
-import { getPost } from './actions'
 import { LikeButton } from '@/components/like-button'
-import { PostDetailSkeleton } from '@/components/post-detail-skeleton'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { useState } from 'react'
-import { DeletePost } from '@/components/delete-post'
 import { BookmarkButton } from '@/components/boomark-button'
-import { notFound } from 'next/navigation'
+import { validateRequest } from '@/auth'
 
-export function PostDetail({ postId }: { postId: string }) {
-  const { user } = useSession()
-  const [isDeletePostModalOpen, setIsDeletePostModalOPen] = useState(false)
+export async function PostDetail({ post }: { post: PostData }) {
+  const { user } = await validateRequest()
+  // const [isDeletePostModalOpen, setIsDeletePostModalOPen] = useState(false)
 
-  const { data: post, isFetching } = useQuery({
-    queryKey: ['post', postId],
-    queryFn: async () => await getPost(postId),
-    staleTime: Infinity
-  })
+  // const { data: post, isFetching } = useQuery({
+  //   queryKey: ['post', postId],
+  //   queryFn: () => getPost(postId),
+  //   staleTime: Infinity
+  // })
 
-  if (isFetching) {
-    return <PostDetailSkeleton />
-  }
-
-  if (!post) {
-    return notFound()
-  }
+  // if (isFetching) {
+  //   return <PostDetailSkeleton />
+  // }
 
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
@@ -65,7 +53,7 @@ export function PostDetail({ postId }: { postId: string }) {
       <div className="flex justify-between items-center py-2 px-0.5 border-y text-[#97989F]">
         <div className="flex items-center gap-2">
           <LikeButton
-            postId={postId}
+            postId={post.id}
             initialState={{
               likes: post._count.likes,
               isLikedByUser: post.likes.some((like) => like.userId === user?.id)
@@ -97,7 +85,7 @@ export function PostDetail({ postId }: { postId: string }) {
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem
-                  onClick={() => setIsDeletePostModalOPen(true)}
+                  // onClick={() => setIsDeletePostModalOPen(true)}
                   className="cursor-pointer">
                   <Trash2 className="size-4 text-destructive mr-2" />
                   <p className="text-destructive">Delete Post</p>
@@ -111,13 +99,13 @@ export function PostDetail({ postId }: { postId: string }) {
         </DropdownMenu>
       </div>
       <EditorOutput content={post.content} />
-      {isDeletePostModalOpen && (
+      {/* {isDeletePostModalOpen && (
         <DeletePost
           isOpen={isDeletePostModalOpen}
           setIsOpen={setIsDeletePostModalOPen}
           post={post}
         />
-      )}
+      )} */}
     </MaxWidthWrapper>
   )
 }
