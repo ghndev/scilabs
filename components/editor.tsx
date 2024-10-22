@@ -26,7 +26,7 @@ import { cn, formatEnumValue } from '@/lib/utils'
 import { postSchema, PostValues } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronsUpDown, Loader2, Upload } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import EditorJS from '@editorjs/editorjs'
@@ -63,13 +63,17 @@ export function Editor({
   const ref = useRef<EditorJS>()
   const _titleRef = useRef<HTMLTextAreaElement>(null)
 
-  const { mutate: savePost, isPending } = useMutation({
+  const [isPending, startTransition] = useTransition()
+
+  const { mutate: savePost, isPending: isMutating } = useMutation({
     mutationKey: ['post', postId],
     mutationFn: (values: PostValues) =>
       postId ? updatePost(values, postId) : createPost(values),
     onSuccess: ({ url }) => {
       queryClient.invalidateQueries({ queryKey: ['post'] })
-      router.push(url)
+      startTransition(() => {
+        router.push(url)
+      })
     },
     onError: (error) => {
       toast({
@@ -177,11 +181,11 @@ export function Editor({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <Button
-            disabled={isPending}
+            disabled={isMutating || isPending}
             type="submit"
             size="sm"
             className="text-white mb-10">
-            {isPending ? (
+            {isMutating || isPending ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             ) : (
               <Upload className="h-4 w-4 mr-2" />
