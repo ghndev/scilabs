@@ -16,11 +16,11 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { BookmarkButton } from '@/components/boomark-button'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getPost } from './actions'
 import { PostDetailSkeleton } from '@/components/post-detail-skeleton'
 import { notFound } from 'next/navigation'
 import { useSession } from '@/components/session-provider'
 import { DeletePost } from '@/components/delete-post'
+import { getPostDetail } from './actions'
 
 export function PostDetail({ postId }: { postId: string }) {
   const { user } = useSession()
@@ -28,7 +28,7 @@ export function PostDetail({ postId }: { postId: string }) {
 
   const { data: post, isFetching } = useQuery({
     queryKey: ['post', postId],
-    queryFn: () => getPost(postId),
+    queryFn: () => getPostDetail(postId),
     staleTime: Infinity
   })
 

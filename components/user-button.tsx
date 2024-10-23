@@ -12,11 +12,7 @@ import { logout } from '@/app/(auth)/actions'
 import { useState } from 'react'
 import { Profile } from './profile'
 import { useRouter } from 'next/navigation'
-import {
-  keepPreviousData,
-  useQuery,
-  useQueryClient
-} from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getCurrentUser } from '@/app/(main)/actions'
 import { useSession } from './session-provider'
 import { Skeleton } from './ui/skeleton'

@@ -4,7 +4,7 @@ import { validateRequest } from '@/auth'
 import { db } from '@/db'
 import { getPostDataInclude } from '@/lib/types'
 
-export async function getPost(postId: string) {
+export async function getPostDetail(postId: string) {
   const { user } = await validateRequest()
 
   const post = await db.post.findUnique({

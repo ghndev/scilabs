@@ -26,7 +26,7 @@ export async function Navbar() {
             <Link href="/new">
               <SquarePen className="text-primary h-6 w-6" strokeWidth={1} />
             </Link>
-            {/* <UserButton /> */}
+            <UserButton />
           </div>
         </div>
       </MaxWidthWrapper>
