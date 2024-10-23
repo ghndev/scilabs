@@ -19,7 +19,8 @@ export const lucia = new Lucia(adapter, {
       name: databaseUserAttributes.name,
       email: databaseUserAttributes.email,
       image: databaseUserAttributes.image,
-      bio: databaseUserAttributes.bio
+      bio: databaseUserAttributes.bio,
+      verified: databaseUserAttributes.verified
     }
   }
 })
@@ -36,6 +37,7 @@ interface DatabaseUserAttributes {
   email: string
   image: string | null
   bio: string | null
+  verified: boolean | null
 }
 
 export const google = new Google(
