@@ -17,8 +17,11 @@ export async function Navbar() {
     <nav className="h-16">
       <MaxWidthWrapper>
         <div className="flex items-center justify-between h-full">
-          <Link href="/" className={`${firaSansCondensed.className} text-3xl`}>
+          <Link
+            href="/"
+            className={`relative ${firaSansCondensed.className} text-3xl`}>
             sci<span className="text-primary font-semibold">LABS</span>
+            <span className="font-semibold text-xs"> beta</span>
           </Link>
           <SearchBar />
           <div className="flex items-center gap-5">

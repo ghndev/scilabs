@@ -4,7 +4,8 @@ export function getUserDataSelect() {
   return {
     name: true,
     image: true,
-    bio: true
+    bio: true,
+    verified: true
   } satisfies Prisma.UserSelect
 }
 

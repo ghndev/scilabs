@@ -1,6 +1,6 @@
 import { Card } from './ui/card'
 import { formatDate, formatEnumValue } from '@/lib/utils'
-import { CircleUser } from 'lucide-react'
+import { BadgeCheck, CircleUser } from 'lucide-react'
 import Link from 'next/link'
 import { Avatar, AvatarImage } from './ui/avatar'
 import { PostData } from '@/lib/types'
@@ -40,11 +40,16 @@ export function PostCard({ post }: { post: PostData }) {
           ) : (
             <CircleUser className="text-primary h-6 w-6" strokeWidth={1} />
           )}
-          <p className="text-[#97989F] text-xs font-semibold">
-            {post.author.name}
+          <p className="text-[#97989F] text-xs font-semibold flex items-center justify-center">
+            {post.author.name}{' '}
+            {post.author.verified && (
+              <BadgeCheck className="ml-1 size-4 text-primary" />
+            )}
           </p>
         </div>
-        <p className="text-[#97989F] text-xs">{formatDate(post.createdAt)}</p>
+        <p className="text-[#97989F] text-[0.7rem]">
+          {formatDate(post.createdAt)}
+        </p>
       </div>
     </Card>
   )
