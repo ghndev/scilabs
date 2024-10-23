@@ -1,3 +1,5 @@
+'use client'
+
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { formatDate, formatEnumValue } from '@/lib/utils'
 import { CircleUser, Ellipsis, Pencil, Trash2 } from 'lucide-react'
@@ -9,25 +11,34 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
-import { PostData } from '@/lib/types'
 import { LikeButton } from '@/components/like-button'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { BookmarkButton } from '@/components/boomark-button'
-import { validateRequest } from '@/auth'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getPost } from './actions'
+import { PostDetailSkeleton } from '@/components/post-detail-skeleton'
+import { notFound } from 'next/navigation'
+import { useSession } from '@/components/session-provider'
+import { DeletePost } from '@/components/delete-post'
 
-export async function PostDetail({ post }: { post: PostData }) {
-  const { user } = await validateRequest()
-  // const [isDeletePostModalOpen, setIsDeletePostModalOPen] = useState(false)
+export function PostDetail({ postId }: { postId: string }) {
+  const { user } = useSession()
+  const [isDeletePostModalOpen, setIsDeletePostModalOPen] = useState(false)
 
-  // const { data: post, isFetching } = useQuery({
-  //   queryKey: ['post', postId],
-  //   queryFn: () => getPost(postId),
-  //   staleTime: Infinity
-  // })
+  const { data: post, isFetching } = useQuery({
+    queryKey: ['post', postId],
+    queryFn: () => getPost(postId),
+    staleTime: Infinity
+  })
 
-  // if (isFetching) {
-  //   return <PostDetailSkeleton />
-  // }
+  if (isFetching) {
+    return <PostDetailSkeleton />
+  }
+
+  if (!post) {
+    return notFound()
+  }
 
   return (
     <MaxWidthWrapper className="max-w-[700px] mt-5 pb-12">
@@ -85,7 +96,7 @@ export async function PostDetail({ post }: { post: PostData }) {
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem
-                  // onClick={() => setIsDeletePostModalOPen(true)}
+                  onClick={() => setIsDeletePostModalOPen(true)}
                   className="cursor-pointer">
                   <Trash2 className="size-4 text-destructive mr-2" />
                   <p className="text-destructive">Delete Post</p>
@@ -99,13 +110,13 @@ export async function PostDetail({ post }: { post: PostData }) {
         </DropdownMenu>
       </div>
       <EditorOutput content={post.content} />
-      {/* {isDeletePostModalOpen && (
+      {isDeletePostModalOpen && (
         <DeletePost
           isOpen={isDeletePostModalOpen}
           setIsOpen={setIsDeletePostModalOPen}
           post={post}
         />
-      )} */}
+      )}
     </MaxWidthWrapper>
   )
 }
