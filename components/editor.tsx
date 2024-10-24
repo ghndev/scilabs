@@ -70,8 +70,8 @@ export function Editor({
     mutationFn: (values: PostValues) =>
       postId ? updatePost(values, postId) : createPost(values),
     onSuccess: ({ url }) => {
-      queryClient.invalidateQueries({ queryKey: ['post'] })
       startTransition(() => {
+        queryClient.invalidateQueries({ queryKey: ['post'] })
         router.push(url)
       })
     },

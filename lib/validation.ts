@@ -70,3 +70,12 @@ export const profileSchema = z.object({
 })
 
 export type ProfileValues = z.infer<typeof profileSchema>
+
+// export const reportSchema = z.object({
+//   description: z
+//     .string()
+//     .min(1, 'Description is required')
+//     .max(100, 'Description must be 10 characters or less')
+// })
+
+// export type ReportValues = z.infer<typeof reportSchema>

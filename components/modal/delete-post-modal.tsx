@@ -6,21 +6,25 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from './ui/dialog'
+} from '../ui/dialog'
 import { Loader2, Trash2 } from 'lucide-react'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deletePost } from '@/app/(main)/posts/[postId]/actions'
-import { useToast } from './ui/use-toast'
+import { useToast } from '../ui/use-toast'
 import { useRouter } from 'next/navigation'
 
-interface DeletePostProps {
+interface DeletePostModalProps {
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
   post: PostData
 }
 
-export function DeletePost({ isOpen, setIsOpen, post }: DeletePostProps) {
+export function DeletePostModal({
+  isOpen,
+  setIsOpen,
+  post
+}: DeletePostModalProps) {
   const { toast } = useToast()
   const router = useRouter()
   const queryClient = useQueryClient()

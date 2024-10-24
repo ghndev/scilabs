@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog'
 import { UserData } from '@/lib/types'
-import { Label } from './ui/label'
-import { useToast } from './ui/use-toast'
+import { Label } from '../ui/label'
+import { useToast } from '../ui/use-toast'
 import { useUploadThing } from '@/lib/uploadthing'
 import { cn } from '@/lib/utils'
 import Dropzone, { FileRejection } from 'react-dropzone'
-import { Loader2, MousePointerSquareDashed } from 'lucide-react'
-import { Progress } from './ui/progress'
+import { BadgeCheck, Loader2, MousePointerSquareDashed } from 'lucide-react'
+import { Progress } from '../ui/progress'
 import { useForm } from 'react-hook-form'
 import { profileSchema, ProfileValues } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -18,21 +18,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from './ui/form'
-import { Input } from './ui/input'
-import { Textarea } from './ui/textarea'
-import { Button } from './ui/button'
+} from '../ui/form'
+import { Input } from '../ui/input'
+import { Textarea } from '../ui/textarea'
+import { Button } from '../ui/button'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateProfile } from '@/app/(main)/actions'
-import { Avatar, AvatarImage } from './ui/avatar'
+import { Avatar, AvatarImage } from '../ui/avatar'
 
-interface ProfileProps {
+interface ProfileModalProps {
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
   user: UserData
 }
 
-export function Profile({ isOpen, setIsOpen, user }: ProfileProps) {
+export function ProfileModal({ isOpen, setIsOpen, user }: ProfileModalProps) {
   const { toast } = useToast()
   const [isDragOver, setIsDragOver] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -104,7 +104,12 @@ export function Profile({ isOpen, setIsOpen, user }: ProfileProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Profile Information</DialogTitle>
+          <DialogTitle className="flex items-center justify-center">
+            Profile Information{' '}
+            {user.verified && (
+              <BadgeCheck className="ml-1 size-5 text-primary" />
+            )}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-1.5">
           <Label>Photo</Label>

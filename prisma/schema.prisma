@@ -89,3 +89,39 @@ enum Topic {
   DAILY
   OTHER
 }
+
+// model Report {
+//   id          String   @id @default(cuid())
+//   description String
+//   reporter    User     @relation(fields: [reporterId], references: [id])
+//   reporterId  String
+//   post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+//   postId      String
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+// reason      ReportReason
+// status      ReportStatus @default(PENDING)
+// adminNote   String?
+// resolvedAt  DateTime?
+// @@index([status])
+//   @@unique([reporterId, postId])
+//   @@index([postId])
+// }
+
+// enum ReportStatus {
+//   PENDING
+//   REVIEWING
+//   RESOLVED
+//   REJECTED
+// }
+
+// enum ReportReason {
+//   SPAM
+//   INAPPROPRIATE
+//   MISINFORMATION
+//   PLAGIARISM
+//   HARASSMENT
+//   HATE_SPEECH
+//   OTHER
+// }

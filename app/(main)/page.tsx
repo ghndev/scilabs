@@ -1,7 +1,7 @@
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { db } from '@/db'
 import { formatDate, formatEnumValue } from '@/lib/utils'
-import { CircleUser } from 'lucide-react'
+import { BadgeCheck, CircleUser } from 'lucide-react'
 import Link from 'next/link'
 import { unstable_cache as nextCache } from 'next/cache'
 import { MAIN_POST_ID } from '@/lib/constants'
@@ -16,7 +16,8 @@ async function getPost() {
       author: {
         select: {
           name: true,
-          image: true
+          image: true,
+          verified: true
         }
       }
     }
@@ -68,7 +69,12 @@ export default async function Home() {
                     strokeWidth={1}
                   />
                 )}
-                <p className="text-white text-xs">{post.author.name}</p>
+                <p className="text-white text-xs font-semibold flex items-center justify-center">
+                  {post.author.name}{' '}
+                  {post.author.verified && (
+                    <BadgeCheck className="ml-1 size-4 text-primary" />
+                  )}
+                </p>
               </div>
               <p className="text-white text-xs font-light">
                 {formatDate(post.createdAt)}

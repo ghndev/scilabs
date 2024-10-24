@@ -10,7 +10,7 @@ import {
 import Link from 'next/link'
 import { logout } from '@/app/(auth)/actions'
 import { useState } from 'react'
-import { Profile } from './profile'
+import { ProfileModal } from './modal/profile-modal'
 import { useRouter } from 'next/navigation'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getCurrentUser } from '@/app/(main)/actions'
@@ -83,7 +83,7 @@ export function UserButton() {
         </DropdownMenuContent>
       </DropdownMenu>
       {user && (
-        <Profile
+        <ProfileModal
           isOpen={isProfileModalOpen}
           setIsOpen={setIsProfileModalOpen}
           user={user}

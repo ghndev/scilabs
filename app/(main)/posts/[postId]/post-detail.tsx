@@ -2,7 +2,14 @@
 
 import { MaxWidthWrapper } from '@/components/max-width-wrapper'
 import { formatDate, formatEnumValue } from '@/lib/utils'
-import { BadgeCheck, CircleUser, Ellipsis, Pencil, Trash2 } from 'lucide-react'
+import {
+  BadgeCheck,
+  CircleUser,
+  Ellipsis,
+  Pencil,
+  ShieldAlert,
+  Trash2
+} from 'lucide-react'
 import { EditorOutput } from '@/components/editor-output'
 import {
   DropdownMenu,
@@ -19,12 +26,13 @@ import { useQuery } from '@tanstack/react-query'
 import { PostDetailSkeleton } from '@/components/post-detail-skeleton'
 import { notFound } from 'next/navigation'
 import { useSession } from '@/components/session-provider'
-import { DeletePost } from '@/components/delete-post'
+import { DeletePostModal } from '@/components/modal/delete-post-modal'
 import { getPostDetail } from './actions'
 
 export function PostDetail({ postId }: { postId: string }) {
   const { user } = useSession()
-  const [isDeletePostModalOpen, setIsDeletePostModalOPen] = useState(false)
+  const [isDeletePostModalOpen, setIsDeletePostModalOpen] = useState(false)
+  const [isReportPostModalOpen, setIsReportPostModalOpen] = useState(false)
 
   const { data: post, isFetching } = useQuery({
     queryKey: ['post', postId],
@@ -99,14 +107,17 @@ export function PostDetail({ postId }: { postId: string }) {
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem
-                  onClick={() => setIsDeletePostModalOPen(true)}
+                  onClick={() => setIsDeletePostModalOpen(true)}
                   className="cursor-pointer">
                   <Trash2 className="size-4 text-destructive mr-2" />
-                  <p className="text-destructive">Delete Post</p>
+                  <p className="text-destructive">Report Post</p>
                 </DropdownMenuItem>
               </>
             )}
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              onClick={() => setIsReportPostModalOpen(true)}
+              className="cursor-pointer">
+              <ShieldAlert className="size-4 text-destructive mr-2" />
               <p className="text-destructive">Report Post</p>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -114,9 +125,9 @@ export function PostDetail({ postId }: { postId: string }) {
       </div>
       <EditorOutput content={post.content} />
       {isDeletePostModalOpen && (
-        <DeletePost
+        <DeletePostModal
           isOpen={isDeletePostModalOpen}
-          setIsOpen={setIsDeletePostModalOPen}
+          setIsOpen={setIsDeletePostModalOpen}
           post={post}
         />
       )}
