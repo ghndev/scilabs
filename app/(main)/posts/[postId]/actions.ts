@@ -15,7 +15,7 @@ export async function getPostDetail(postId: string) {
   })
 
   if (!post) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
   }
 
   return post
@@ -25,7 +25,7 @@ export async function getBookmarkStatus(postId: string) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const post = await db.post.findUnique({
@@ -42,7 +42,7 @@ export async function getBookmarkStatus(postId: string) {
   })
 
   if (!post) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
   }
 
   const data = {
@@ -56,7 +56,7 @@ export async function createBookmark(postId: string) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const post = await db.post.findUnique({
@@ -66,7 +66,17 @@ export async function createBookmark(postId: string) {
   })
 
   if (!post) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
+  }
+
+  const bookmarkCount = await db.bookmark.count({
+    where: {
+      userId: user.id
+    }
+  })
+
+  if (bookmarkCount >= 10) {
+    throw new Error('bookmark_limit_exceeded')
   }
 
   await db.bookmark.upsert({
@@ -88,7 +98,7 @@ export async function deleteBookmark(postId: string) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const post = await db.post.findUnique({
@@ -98,7 +108,7 @@ export async function deleteBookmark(postId: string) {
   })
 
   if (!post) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
   }
 
   await db.bookmark.deleteMany({
@@ -113,7 +123,7 @@ export async function getLikeStatus(postId: string) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const post = await db.post.findUnique({
@@ -135,7 +145,7 @@ export async function getLikeStatus(postId: string) {
   })
 
   if (!post) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
   }
 
   const data = { likes: post._count.likes, isLikedByUser: !!post.likes.length }
@@ -147,7 +157,7 @@ export async function createLike(postId: string) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const post = await db.post.findUnique({
@@ -157,7 +167,7 @@ export async function createLike(postId: string) {
   })
 
   if (!post) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
   }
 
   await db.like.upsert({
@@ -179,7 +189,7 @@ export async function deleteLike(postId: string) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const post = await db.post.findUnique({
@@ -189,7 +199,7 @@ export async function deleteLike(postId: string) {
   })
 
   if (!post) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
   }
 
   await db.like.deleteMany({
@@ -204,7 +214,7 @@ export async function deletePost(postId: string) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const savedPost = await db.post.findUnique({
@@ -214,11 +224,11 @@ export async function deletePost(postId: string) {
   })
 
   if (!savedPost) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
   }
 
   if (savedPost.authorId !== user.id) {
-    throw new Error('You do not have permission to delete this post')
+    throw new Error('permission_denied')
   }
 
   await db.post.delete({
@@ -226,6 +236,4 @@ export async function deletePost(postId: string) {
       id: postId
     }
   })
-
-  return { message: 'Post deleted successfully' }
 }

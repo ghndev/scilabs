@@ -10,6 +10,7 @@ import {
 } from '@/app/(main)/posts/[postId]/actions'
 import { BookmarkInfo } from '@/lib/types'
 import { cn } from '@/lib/utils'
+import { ERROR_DESCRIPTIONS } from '@/lib/constants'
 
 interface BookmarkButtonProps {
   postId: string
@@ -48,7 +49,10 @@ export function BookmarkButton({ postId, initialState }: BookmarkButtonProps) {
       queryClient.setQueryData(queryKey, context?.previousState)
       toast({
         variant: 'destructive',
-        description: 'Something went wrong.'
+        description:
+          ERROR_DESCRIPTIONS[
+            error.message as keyof typeof ERROR_DESCRIPTIONS
+          ] || ERROR_DESCRIPTIONS.DEFAULT
       })
     }
   })
@@ -56,7 +60,7 @@ export function BookmarkButton({ postId, initialState }: BookmarkButtonProps) {
     <BookmarkPlus
       onClick={() => mutate()}
       className={cn(
-        'size-5 cursor-pointer hover:fill-[#97989F]',
+        'size-5 cursor-pointer hover:fill-[#97989F] text-[#97989F]',
         data.isBookmarkedByUser === true && 'fill-[#97989F]'
       )}
       strokeWidth={1}

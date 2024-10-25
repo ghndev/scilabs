@@ -9,7 +9,7 @@ export async function updatePost(values: PostValues, postId: string) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const savedPost = await db.post.findUnique({
@@ -19,11 +19,11 @@ export async function updatePost(values: PostValues, postId: string) {
   })
 
   if (!savedPost) {
-    throw new Error('Post not found')
+    throw new Error('post_not_found')
   }
 
   if (savedPost.authorId !== user.id) {
-    throw new Error('You do not have permission to edit this post')
+    throw new Error('permission_denied')
   }
 
   const { topic, title, content } = postSchema.parse(values)

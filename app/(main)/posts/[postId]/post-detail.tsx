@@ -32,11 +32,10 @@ import { getPostDetail } from './actions'
 export function PostDetail({ postId }: { postId: string }) {
   const { user } = useSession()
   const [isDeletePostModalOpen, setIsDeletePostModalOpen] = useState(false)
-  const [isReportPostModalOpen, setIsReportPostModalOpen] = useState(false)
 
   const { data: post, isFetching } = useQuery({
     queryKey: ['post', postId],
-    queryFn: () => getPostDetail(postId),
+    queryFn: async () => await getPostDetail(postId),
     staleTime: Infinity
   })
 
@@ -72,7 +71,7 @@ export function PostDetail({ postId }: { postId: string }) {
         </div>
         <p className="text-[#696A75] text-xs">{formatDate(post.createdAt)}</p>
       </div>
-      <div className="flex justify-between items-center py-2 px-0.5 border-y text-[#97989F]">
+      <div className="flex justify-between items-center py-2 px-0.5 border-y">
         <div className="flex items-center gap-2">
           <LikeButton
             postId={post.id}
@@ -110,13 +109,11 @@ export function PostDetail({ postId }: { postId: string }) {
                   onClick={() => setIsDeletePostModalOpen(true)}
                   className="cursor-pointer">
                   <Trash2 className="size-4 text-destructive mr-2" />
-                  <p className="text-destructive">Report Post</p>
+                  <p className="text-destructive">Delete Post</p>
                 </DropdownMenuItem>
               </>
             )}
-            <DropdownMenuItem
-              onClick={() => setIsReportPostModalOpen(true)}
-              className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer">
               <ShieldAlert className="size-4 text-destructive mr-2" />
               <p className="text-destructive">Report Post</p>
             </DropdownMenuItem>

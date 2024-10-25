@@ -14,9 +14,7 @@ export function formatEnumValue(enumValue: string): string {
 export function formatDate(date: Date, locale: string = 'en-US'): string {
   let dateObject: Date
 
-  if (typeof date === 'string') {
-    dateObject = new Date(date)
-  } else if (date instanceof Date) {
+  if (date instanceof Date) {
     dateObject = date
   } else {
     return 'Invalid Date'

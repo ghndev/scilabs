@@ -10,6 +10,7 @@ import {
 } from '@/app/(main)/posts/[postId]/actions'
 import { ThumbsUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ERROR_DESCRIPTIONS } from '@/lib/constants'
 
 interface LikeButtonProps {
   postId: string
@@ -50,7 +51,10 @@ export function LikeButton({ postId, initialState }: LikeButtonProps) {
       queryClient.setQueryData(queryKey, context?.previousState)
       toast({
         variant: 'destructive',
-        description: 'Something went wrong.'
+        description:
+          ERROR_DESCRIPTIONS[
+            error.message as keyof typeof ERROR_DESCRIPTIONS
+          ] || ERROR_DESCRIPTIONS.DEFAULT
       })
     }
   })
@@ -60,12 +64,12 @@ export function LikeButton({ postId, initialState }: LikeButtonProps) {
       <ThumbsUp
         onClick={() => mutate()}
         className={cn(
-          'size-5 cursor-pointer hover:fill-[#97989F]',
-          data.isLikedByUser && 'fill-[#97989F] text-[#97989F]'
+          'size-5 cursor-pointer hover:fill-[#97989F] text-[#97989F]',
+          data.isLikedByUser && 'fill-[#97989F]'
         )}
         strokeWidth={1}
       />
-      <p className="text-sm font-extralight">{data.likes}</p>
+      <p className="text-sm font-extralight text-[#97989F]">{data.likes}</p>
     </div>
   )
 }

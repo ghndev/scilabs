@@ -9,7 +9,7 @@ export async function createPost(values: PostValues) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const { topic, title, content } = postSchema.parse(values)

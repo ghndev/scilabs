@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleUser, LogIn, LogOut, User } from 'lucide-react'
+import { Bookmark, CircleUser, LogIn, LogOut, User } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,12 +62,18 @@ export function UserButton() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="dark:border">
           <DropdownMenuItem onClick={handleProfile} className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
+            <User className="mr-2 size-4" />
             <span>Profile</span>
           </DropdownMenuItem>
-          {user ? (
+          <Link href="/bookmarks">
             <DropdownMenuItem className="cursor-pointer">
-              <LogOut className="mr-2 h-4 w-4" />
+              <Bookmark className="mr-2 size-4" />
+              <span>Bookmarks</span>
+            </DropdownMenuItem>
+          </Link>
+          {user ? (
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+              <LogOut className="mr-2 size-4" />
               <span>Logout</span>
             </DropdownMenuItem>
           ) : (
@@ -75,7 +81,7 @@ export function UserButton() {
               <DropdownMenuItem
                 onClick={handleLogout}
                 className="cursor-pointer">
-                <LogIn className="mr-2 h-4 w-4" />
+                <LogIn className="mr-2 size-4" />
                 <span>Login</span>
               </DropdownMenuItem>
             </Link>

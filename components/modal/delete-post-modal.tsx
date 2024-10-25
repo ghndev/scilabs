@@ -32,9 +32,9 @@ export function DeletePostModal({
   const { mutate, isPending } = useMutation({
     mutationKey: ['delete-post'],
     mutationFn: async (postId: string) => await deletePost(postId),
-    onSuccess: ({ message }) => {
+    onSuccess() {
       toast({
-        title: message
+        title: 'Post deleted successfully'
       })
       queryClient.invalidateQueries({ queryKey: ['posts'] })
       router.push('/')

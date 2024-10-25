@@ -30,7 +30,7 @@ export async function updateProfile(values: ProfileValues) {
   const { user } = await validateRequest()
 
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw new Error('auth_required')
   }
 
   const { image, username, bio } = profileSchema.parse(values)
