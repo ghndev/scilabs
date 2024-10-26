@@ -1,6 +1,6 @@
 import { CommentData } from '@/lib/types'
 import { Avatar, AvatarImage } from './ui/avatar'
-import { CircleUser, MessageCircle } from 'lucide-react'
+import { BadgeCheck, CircleUser, MessageCircle } from 'lucide-react'
 import { formatTimeAgo } from '@/lib/utils'
 
 interface CommentProps {
@@ -18,7 +18,12 @@ export function Comment({ comment }: CommentProps) {
         ) : (
           <CircleUser className="text-primary size-10" strokeWidth={1} />
         )}
-        <p className="font-semibold">{comment.author.name}</p>
+        <p className="font-semibold flex items-center justify-center">
+          {comment.author.name}{' '}
+          {comment.author.verified && (
+            <BadgeCheck className="ml-1 size-4 text-primary" />
+          )}
+        </p>
         <p className="text-gray-400 text-xs">
           {formatTimeAgo(comment.createdAt)}
         </p>

@@ -1,7 +1,7 @@
 import { loadMoreComments } from '@/app/(main)/posts/[postId]/actions'
 import { COMMENTS_PER_PAGE } from '@/lib/constants'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { Comment } from './Comment'
+import { Comment } from './comment-card'
 
 export default function CommentList({ postId }: { postId: string }) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
