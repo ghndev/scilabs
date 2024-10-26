@@ -3,7 +3,11 @@
 import { validateRequest } from '@/auth'
 import { db } from '@/db'
 import { COMMENTS_PER_PAGE } from '@/lib/constants'
-import { getCommentDataInclude, getPostDataInclude } from '@/lib/types'
+import {
+  CommentSortType,
+  getCommentDataInclude,
+  getPostDataInclude
+} from '@/lib/types'
 import { commentSchema, CommentValues } from '@/lib/validation'
 
 export async function getPostDetail(postId: string) {
@@ -292,11 +296,30 @@ export async function createComment(
 export async function loadMoreComments(
   postId: string,
   page: number,
-  limit: number
+  limit: number,
+  sortBy: CommentSortType = 'latest'
 ) {
   const { user } = await validateRequest()
 
   const skip = (page - 1) * limit
+
+  const orderBy =
+    sortBy === 'likes'
+      ? [
+          {
+            _count: {
+              likes: 'desc'
+            }
+          },
+          {
+            createdAt: 'desc'
+          }
+        ]
+      : [
+          {
+            createdAt: 'desc'
+          }
+        ]
 
   const comments = await db.comment.findMany({
     where: {
@@ -304,9 +327,16 @@ export async function loadMoreComments(
       parentId: null
     },
     include: getCommentDataInclude(user?.id),
-    orderBy: {
-      createdAt: 'desc'
-    },
+    orderBy: [
+      {
+        likes: {
+          _count: 'desc'
+        }
+      },
+      {
+        createdAt: 'desc'
+      }
+    ],
     take: limit,
     skip
   })

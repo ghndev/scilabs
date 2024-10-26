@@ -102,3 +102,5 @@ export function getCommentDataInclude(loggedInUserId?: string) {
 export type CommentData = Prisma.CommentGetPayload<{
   include: ReturnType<typeof getCommentDataInclude>
 }>
+
+export type CommentSortType = 'latest' | 'likes'
