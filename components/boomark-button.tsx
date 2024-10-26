@@ -45,6 +45,9 @@ export function BookmarkButton({ postId, initialState }: BookmarkButtonProps) {
 
       return { previousState }
     },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] })
+    },
     onError(error, variables, context) {
       queryClient.setQueryData(queryKey, context?.previousState)
       toast({
