@@ -4,36 +4,41 @@ import { LikeInfo } from '@/lib/types'
 import { useToast } from './ui/use-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-  createLike,
-  deleteLike,
-  getLikeStatus
+  createCommentLike,
+  deleteCommentLike,
+  getCommentLikeStatus
 } from '@/app/(main)/posts/[postId]/actions'
 import { ThumbsUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ERROR_DESCRIPTIONS } from '@/lib/constants'
 
-interface LikeButtonProps {
-  postId: string
+interface CommentLikeButtonProps {
+  commentId: string
   initialState: LikeInfo
 }
 
-export function LikeButton({ postId, initialState }: LikeButtonProps) {
+export function CommentLikeButton({
+  commentId,
+  initialState
+}: CommentLikeButtonProps) {
   const { toast } = useToast()
 
   const queryClient = useQueryClient()
 
-  const queryKey = ['like-info', postId]
+  const queryKey = ['like-info', commentId]
 
   const { data } = useQuery({
     queryKey,
-    queryFn: async () => await getLikeStatus(postId),
+    queryFn: async () => await getCommentLikeStatus(commentId),
     initialData: initialState,
     staleTime: Infinity
   })
 
   const { mutate } = useMutation({
     mutationFn: () =>
-      data.isLikedByUser ? deleteLike(postId) : createLike(postId),
+      data.isLikedByUser
+        ? deleteCommentLike(commentId)
+        : createCommentLike(commentId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey })
 
@@ -60,15 +65,17 @@ export function LikeButton({ postId, initialState }: LikeButtonProps) {
   })
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 text-gray-400 font-semibold">
       <ThumbsUp
         onClick={() => mutate()}
         className={cn(
-          'size-5 cursor-pointer hover:fill-[#97989F] text-[#97989F]',
-          data.isLikedByUser && 'fill-[#97989F]'
+          'size-4 cursor-pointer hover:fill-gray-400 text-gray-400',
+          data.isLikedByUser && 'fill-gray-400'
         )}
       />
-      <p className="text-sm font-extralight text-[#97989F]">{data.likes}</p>
+      {data.likes === 0 || data.likes === 1
+        ? `${data.likes} Like`
+        : `${data.likes} Likes`}
     </div>
   )
 }

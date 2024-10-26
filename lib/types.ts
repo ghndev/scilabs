@@ -60,6 +60,14 @@ export function getCommentDataInclude(loggedInUserId?: string) {
     author: {
       select: getUserDataSelect()
     },
+    likes: {
+      where: {
+        userId: loggedInUserId
+      },
+      select: {
+        userId: true
+      }
+    },
     replies: {
       include: {
         author: {

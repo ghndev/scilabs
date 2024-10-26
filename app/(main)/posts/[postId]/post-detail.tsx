@@ -124,7 +124,7 @@ export function PostDetail({ postId }: { postId: string }) {
       </div>
       <EditorOutput content={post.content} />
       <CommentForm postId={post.id} />
-      <CommentList postId={post.id} />
+      <CommentList postId={post.id} userId={user?.id} />
       {isDeletePostModalOpen && (
         <DeletePostModal
           isOpen={isDeletePostModalOpen}

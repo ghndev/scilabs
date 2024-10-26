@@ -66,7 +66,6 @@ export function BookmarkButton({ postId, initialState }: BookmarkButtonProps) {
         'size-5 cursor-pointer hover:fill-[#97989F] text-[#97989F]',
         data.isBookmarkedByUser === true && 'fill-[#97989F]'
       )}
-      strokeWidth={1}
     />
   )
 }

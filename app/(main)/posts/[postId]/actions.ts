@@ -313,3 +313,97 @@ export async function loadMoreComments(
 
   return comments
 }
+
+export async function getCommentLikeStatus(commentId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('auth_required')
+  }
+
+  const comment = await db.comment.findUnique({
+    where: {
+      id: commentId
+    },
+    include: {
+      likes: {
+        where: {
+          userId: user.id
+        }
+      },
+      _count: {
+        select: {
+          likes: true
+        }
+      }
+    }
+  })
+
+  if (!comment) {
+    throw new Error('comment_not_found')
+  }
+
+  const data = {
+    likes: comment._count.likes,
+    isLikedByUser: !!comment.likes.length
+  }
+
+  return data
+}
+
+export async function deleteCommentLike(commentId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('auth_required')
+  }
+
+  const post = await db.comment.findUnique({
+    where: {
+      id: commentId
+    }
+  })
+
+  if (!post) {
+    throw new Error('post_not_found')
+  }
+
+  await db.commentLike.deleteMany({
+    where: {
+      userId: user.id,
+      commentId
+    }
+  })
+}
+
+export async function createCommentLike(commentId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('auth_required')
+  }
+
+  const comment = await db.comment.findUnique({
+    where: {
+      id: commentId
+    }
+  })
+
+  if (!comment) {
+    throw new Error('comment_not_found')
+  }
+
+  await db.commentLike.upsert({
+    where: {
+      id: {
+        userId: user.id,
+        commentId
+      }
+    },
+    create: {
+      userId: user.id,
+      commentId
+    },
+    update: {}
+  })
+}

@@ -1,9 +1,15 @@
 import { loadMoreComments } from '@/app/(main)/posts/[postId]/actions'
 import { COMMENTS_PER_PAGE } from '@/lib/constants'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { Comment } from './comment-card'
+import { Comment } from './comment'
 
-export default function CommentList({ postId }: { postId: string }) {
+export default function CommentList({
+  postId,
+  userId
+}: {
+  postId: string
+  userId: string | undefined
+}) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useInfiniteQuery({
       queryKey: ['comments'],
@@ -20,7 +26,9 @@ export default function CommentList({ postId }: { postId: string }) {
   return (
     <div className="mt-5 space-y-10">
       {data?.pages.flatMap((page) =>
-        page.map((comment) => <Comment key={comment.id} comment={comment} />)
+        page.map((comment) => (
+          <Comment key={comment.id} comment={comment} userId={userId} />
+        ))
       )}
     </div>
   )
