@@ -25,6 +25,11 @@ import { Button } from '../ui/button'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateProfile } from '@/app/(main)/actions'
 import { Avatar, AvatarImage } from '../ui/avatar'
+import {
+  BIO_MAX_LENGTH,
+  ERROR_DESCRIPTIONS,
+  USERNAME_MAX_LENGTH
+} from '@/lib/constants'
 
 interface ProfileModalProps {
   isOpen: boolean
@@ -93,6 +98,15 @@ export function ProfileModal({ isOpen, setIsOpen, user }: ProfileModalProps) {
       })
       setIsOpen(false)
       queryClient.invalidateQueries({ queryKey: ['user'] })
+    },
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        description:
+          ERROR_DESCRIPTIONS[
+            error.message as keyof typeof ERROR_DESCRIPTIONS
+          ] || ERROR_DESCRIPTIONS.DEFAULT
+      })
     }
   })
 
@@ -200,9 +214,11 @@ export function ProfileModal({ isOpen, setIsOpen, user }: ProfileModalProps) {
                     <div className="flex-shrink-0 ml-2">
                       <p
                         className={cn('text-xs', {
-                          'text-red-500': usernameLength && usernameLength > 10
+                          'text-red-500':
+                            usernameLength &&
+                            usernameLength > USERNAME_MAX_LENGTH
                         })}>
-                        {usernameLength || 0}/10
+                        {usernameLength || 0}/{USERNAME_MAX_LENGTH}
                       </p>
                     </div>
                   </div>
@@ -225,9 +241,10 @@ export function ProfileModal({ isOpen, setIsOpen, user }: ProfileModalProps) {
                     <div className="flex-shrink-0 ml-2">
                       <p
                         className={cn('text-xs', {
-                          'text-red-500': bioLength && bioLength > 260
+                          'text-red-500':
+                            bioLength && bioLength > BIO_MAX_LENGTH
                         })}>
-                        {bioLength || 0}/260
+                        {bioLength || 0}/{BIO_MAX_LENGTH}
                       </p>
                     </div>
                   </div>

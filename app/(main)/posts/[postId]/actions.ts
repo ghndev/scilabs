@@ -2,7 +2,9 @@
 
 import { validateRequest } from '@/auth'
 import { db } from '@/db'
-import { getPostDataInclude } from '@/lib/types'
+import { COMMENTS_PER_PAGE } from '@/lib/constants'
+import { getCommentDataInclude, getPostDataInclude } from '@/lib/types'
+import { commentSchema, CommentValues } from '@/lib/validation'
 
 export async function getPostDetail(postId: string) {
   const { user } = await validateRequest()
@@ -236,4 +238,78 @@ export async function deletePost(postId: string) {
       id: postId
     }
   })
+}
+
+export async function createComment(
+  values: CommentValues,
+  postId: string,
+  parentId?: string
+) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error('auth_required')
+  }
+
+  const { content } = commentSchema.parse(values)
+
+  const post = await db.post.findUnique({
+    where: {
+      id: postId
+    }
+  })
+
+  if (!post) {
+    throw new Error('post_not_found')
+  }
+
+  if (parentId) {
+    const parentComment = await db.comment.findUnique({
+      where: {
+        id: parentId
+      }
+    })
+
+    if (!parentComment) {
+      throw new Error('parent_comment_not_found')
+    }
+
+    if (parentComment.parentId) {
+      throw new Error('nested_reply_not_allowed')
+    }
+  }
+
+  await db.comment.create({
+    data: {
+      content,
+      authorId: user.id,
+      postId,
+      ...(parentId && { parentId })
+    }
+  })
+}
+
+export async function loadMoreComments(
+  postId: string,
+  page: number,
+  limit: number
+) {
+  const { user } = await validateRequest()
+
+  const skip = (page - 1) * limit
+
+  const comments = await db.comment.findMany({
+    where: {
+      postId,
+      parentId: null
+    },
+    include: getCommentDataInclude(user?.id),
+    orderBy: {
+      createdAt: 'desc'
+    },
+    take: limit,
+    skip
+  })
+
+  return comments
 }

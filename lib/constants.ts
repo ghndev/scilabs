@@ -1,5 +1,9 @@
 export const MAIN_POST_ID = 'cm0rtq19v00015t1mkv0benln'
 export const POSTS_PER_PAGE = 6
+export const COMMENTS_PER_PAGE = 10
+export const COMMENT_MAX_LENGTH = 500
+export const USERNAME_MAX_LENGTH = 10
+export const BIO_MAX_LENGTH = 260
 
 export const ERROR_MESSAGES = {
   AUTH_REQUIRED: 'auth_required',

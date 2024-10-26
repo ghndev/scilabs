@@ -67,8 +67,8 @@ export function Editor({
 
   const { mutate: savePost, isPending: isMutating } = useMutation({
     mutationKey: ['post', postId],
-    mutationFn: (values: PostValues) =>
-      postId ? updatePost(values, postId) : createPost(values),
+    mutationFn: async (values: PostValues) =>
+      postId ? await updatePost(values, postId) : await createPost(values),
     onSuccess: ({ url }) => {
       startTransition(() => {
         queryClient.invalidateQueries({ queryKey: ['post'] })

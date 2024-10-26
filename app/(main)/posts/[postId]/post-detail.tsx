@@ -28,6 +28,8 @@ import { notFound } from 'next/navigation'
 import { useSession } from '@/components/session-provider'
 import { DeletePostModal } from '@/components/modal/delete-post-modal'
 import { getPostDetail } from './actions'
+import { CommentForm } from '@/components/comment-form'
+import CommentList from '@/components/comment-list'
 
 export function PostDetail({ postId }: { postId: string }) {
   const { user } = useSession()
@@ -121,6 +123,8 @@ export function PostDetail({ postId }: { postId: string }) {
         </DropdownMenu>
       </div>
       <EditorOutput content={post.content} />
+      <CommentForm postId={post.id} />
+      <CommentList postId={post.id} />
       {isDeletePostModalOpen && (
         <DeletePostModal
           isOpen={isDeletePostModalOpen}

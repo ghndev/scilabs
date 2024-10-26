@@ -1,5 +1,6 @@
 import { Topic } from '@prisma/client'
 import { z } from 'zod'
+import { COMMENT_MAX_LENGTH } from './constants'
 
 export const loginSchema = z.object({
   email: z
@@ -71,11 +72,20 @@ export const profileSchema = z.object({
 
 export type ProfileValues = z.infer<typeof profileSchema>
 
+export const commentSchema = z.object({
+  content: z
+    .string()
+    .min(1, 'Comment is required')
+    .max(COMMENT_MAX_LENGTH, 'Comment must be 260 characters or less')
+})
+
+export type CommentValues = z.infer<typeof commentSchema>
+
 // export const reportSchema = z.object({
 //   description: z
 //     .string()
 //     .min(1, 'Description is required')
-//     .max(100, 'Description must be 10 characters or less')
+//     .max(10, 'Description must be 10 characters or less')
 // })
 
 // export type ReportValues = z.infer<typeof reportSchema>

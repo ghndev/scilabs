@@ -45,7 +45,7 @@ export function BookmarkButton({ postId, initialState }: BookmarkButtonProps) {
 
       return { previousState }
     },
-    onSuccess() {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] })
     },
     onError(error, variables, context) {

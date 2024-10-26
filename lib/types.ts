@@ -54,3 +54,43 @@ export interface LikeInfo {
 export interface BookmarkInfo {
   isBookmarkedByUser: boolean
 }
+
+export function getCommentDataInclude(loggedInUserId?: string) {
+  return {
+    author: {
+      select: getUserDataSelect()
+    },
+    replies: {
+      include: {
+        author: {
+          select: getUserDataSelect()
+        },
+        likes: {
+          where: {
+            userId: loggedInUserId
+          },
+          select: {
+            userId: true
+          }
+        },
+        _count: {
+          select: {
+            likes: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    },
+    _count: {
+      select: {
+        likes: true
+      }
+    }
+  } satisfies Prisma.CommentInclude
+}
+
+export type CommentData = Prisma.CommentGetPayload<{
+  include: ReturnType<typeof getCommentDataInclude>
+}>
