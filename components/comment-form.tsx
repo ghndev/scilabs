@@ -1,7 +1,7 @@
 import { commentSchema, CommentValues } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Form, FormControl, FormField, FormItem } from './ui/form'
+import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
@@ -21,11 +21,11 @@ export function CommentForm({ postId }: { postId: string }) {
   const queryClient = useQueryClient()
 
   const { mutate: saveComment, isPending } = useMutation({
-    mutationKey: ['comment'],
+    mutationKey: ['comment', postId],
     mutationFn: async (values: CommentValues) =>
       await createComment(values, postId),
     onSuccess: () => {
-      form.setValue('content', '')
+      form.reset()
       queryClient.invalidateQueries({ queryKey: ['comments'] })
     }
   })
@@ -43,9 +43,9 @@ export function CommentForm({ postId }: { postId: string }) {
           control={form.control}
           name="content"
           render={({ field }) => (
-            <FormItem className="relative">
+            <FormItem>
               <FormControl>
-                <>
+                <div className="relative">
                   <TextareaAutosize
                     {...field}
                     className="pt-5 pb-16 px-4 border-2 border-[#4B6BFB] rounded-md resize-none w-full appearance-none overflow-hidden focus:outline-none"
@@ -70,8 +70,9 @@ export function CommentForm({ postId }: { postId: string }) {
                     )}
                     Send
                   </Button>
-                </>
+                </div>
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

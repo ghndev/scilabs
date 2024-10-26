@@ -123,7 +123,7 @@ export function PostDetail({ postId }: { postId: string }) {
         </DropdownMenu>
       </div>
       <EditorOutput content={post.content} />
-      <CommentForm postId={post.id} />
+      {!isFetching && <CommentForm postId={post.id} />}
       <CommentList postId={post.id} userId={user?.id} />
       {isDeletePostModalOpen && (
         <DeletePostModal

@@ -33,7 +33,7 @@ export function BookmarkList() {
     )
   }
 
-  if (!data) {
+  if (data?.length === 0) {
     return (
       <p className="text-primary text-lg font-semibold text-center">
         Add your favorite post to your list. Simply click the bookmark icon on
@@ -44,7 +44,7 @@ export function BookmarkList() {
 
   return (
     <div className="divide-y divide-gray-500/30 dark:divide-gray-500/70">
-      {data.map((post) => (
+      {data?.map((post) => (
         <div
           key={post.id}
           className="py-5 cursor-pointer"
