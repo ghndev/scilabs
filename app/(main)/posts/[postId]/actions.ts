@@ -9,6 +9,7 @@ import {
   getPostDataInclude
 } from '@/lib/types'
 import { commentSchema, CommentValues } from '@/lib/validation'
+import { Prisma } from '@prisma/client'
 
 export async function getPostDetail(postId: string) {
   const { user } = await validateRequest()
@@ -297,27 +298,29 @@ export async function loadMoreComments(
   postId: string,
   page: number,
   limit: number,
-  sortBy: CommentSortType = 'latest'
+  sortBy: CommentSortType = 'likes'
 ) {
   const { user } = await validateRequest()
 
   const skip = (page - 1) * limit
 
+  const desc = Prisma.SortOrder.desc
+
   const orderBy =
     sortBy === 'likes'
       ? [
           {
-            _count: {
-              likes: 'desc'
+            likes: {
+              _count: desc
             }
           },
           {
-            createdAt: 'desc'
+            createdAt: desc
           }
         ]
       : [
           {
-            createdAt: 'desc'
+            createdAt: desc
           }
         ]
 
@@ -327,16 +330,7 @@ export async function loadMoreComments(
       parentId: null
     },
     include: getCommentDataInclude(user?.id),
-    orderBy: [
-      {
-        likes: {
-          _count: 'desc'
-        }
-      },
-      {
-        createdAt: 'desc'
-      }
-    ],
+    orderBy,
     take: limit,
     skip
   })

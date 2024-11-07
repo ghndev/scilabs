@@ -5,9 +5,23 @@ import { db } from '@/db'
 import { MAIN_POST_ID } from '@/lib/constants'
 import { getPostDataInclude } from '@/lib/types'
 import { profileSchema, ProfileValues } from '@/lib/validation'
+import { Prisma } from '@prisma/client'
 
 export async function loadMorePosts(page: number, limit: number) {
   const skip = (page - 1) * limit
+
+  const desc = Prisma.SortOrder.desc
+
+  const orderBy = [
+    {
+      likes: {
+        _count: desc
+      }
+    },
+    {
+      createdAt: desc
+    }
+  ]
 
   const posts = await db.post.findMany({
     where: {
@@ -18,9 +32,7 @@ export async function loadMorePosts(page: number, limit: number) {
     include: getPostDataInclude(),
     take: limit,
     skip: skip,
-    orderBy: {
-      createdAt: 'desc'
-    }
+    orderBy
   })
 
   return posts
